@@ -6,9 +6,11 @@ require 'zensu/celluloid_ext'
 
 Celluloid::ZMQ.init
 
+require 'zensu/server/authenticator'
 require 'zensu/server/publisher'
 require 'zensu/server/puller'
 
+require 'zensu/client/authenticator'
 require 'zensu/client/pusher'
 require 'zensu/client/subscriber'
 
