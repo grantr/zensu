@@ -26,7 +26,7 @@ module Zensu
 
       def handle_message(message)
         #TODO dispatch message properly
-        puts "handled message: #{message}"
+        puts "handled push: #{message}"
       end
     end
   end

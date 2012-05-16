@@ -20,6 +20,7 @@ module Zensu
 
       def push(message)
         #TODO receive pushes from handlers and push to servers
+        @socket << message
       end
 
     end
