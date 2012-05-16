@@ -1,4 +1,6 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in zensu.gemspec
 gemspec
+
+gem "celluloid", git: "https://github.com/celluloid/celluloid"
+gem "celluloid-zmq", git: "https://github.com/celluloid/celluloid-zmq"
