@@ -20,4 +20,6 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "celluloid"
   gem.add_runtime_dependency "celluloid-zmq"
   gem.add_runtime_dependency "multi_json"
+  gem.add_runtime_dependency "redis"
+  gem.add_runtime_dependency "redis-namespace"
 end
