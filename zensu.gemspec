@@ -22,4 +22,5 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "multi_json"
   gem.add_runtime_dependency "redis"
   gem.add_runtime_dependency "redis-namespace"
+  gem.add_runtime_dependency "thor"
 end
