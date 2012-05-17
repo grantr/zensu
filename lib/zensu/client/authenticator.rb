@@ -5,6 +5,9 @@ module Zensu
     class Authenticator
       include Celluloid::ZMQ
 
+      include RPC::Encoding
+      include RPC::Handshake
+
       def initialize
         @socket = Celluloid::ZMQ::ReqSocket.new
 
@@ -21,10 +24,13 @@ module Zensu
       end
 
       def handshake
-        @socket << "handshake1" #TODO send: client id, public key
+        request = encode HandshakeRequest.new("client_name", "client_cert")
+        puts "sending request: #{request}"
+        @socket << request
         reply = @socket.read
         puts "got reply: #{reply}"
-        #TODO handshake
+        response = HandshakeResponse.parse(decode(reply))
+        #TODO verify server cert and decrypt/store shared key
       end
 
       def authenticated?
