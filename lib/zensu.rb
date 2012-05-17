@@ -12,6 +12,8 @@ require 'zensu/rpc'
 require 'zensu/rpc/encoding'
 require 'zensu/rpc/handshake'
 
+require 'zensu/ssl'
+
 require 'zensu/server/authenticator'
 require 'zensu/server/publisher'
 require 'zensu/server/puller'

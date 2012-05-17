@@ -1,5 +1,3 @@
-require 'openssl'
-
 module Zensu
   module Client
     class Authenticator
@@ -7,6 +5,9 @@ module Zensu
 
       include RPC::Encoding
       include RPC::Handshake
+      include SSL
+
+      #TODO make this a state machine that transitions when key becomes valid/invalid
 
       def initialize
         @socket = Celluloid::ZMQ::ReqSocket.new
@@ -17,20 +18,35 @@ module Zensu
           @socket.close
           raise
         end
+
+        run!
       end
 
       def finalize
         @socket.close if @socket
       end
 
+      def run
+        #TODO retry if handshake failed
+        handshake
+      end
+
       def handshake
-        request = encode HandshakeRequest.new("client_name", "client_cert")
+        #TODO send client cert
+        request = encode HandshakeRequest.new("client_name", certificate.to_pem)
         puts "sending request: #{request}"
         @socket << request
         reply = @socket.read
         puts "got reply: #{reply}"
         response = HandshakeResponse.parse(decode(reply))
-        #TODO verify server cert and decrypt/store shared key
+        
+
+        if valid_certificate?(response.result['cert'])
+          @shared_key = private_decrypt(private_key, response.result['shared_key'])
+        else
+          @shared_key = nil
+          # TODO self destruct or try again later
+        end
       end
 
       def authenticated?

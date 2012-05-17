@@ -1,6 +1,7 @@
 module Zensu
   module RPC
     module Handshake
+      #TODO request and response should probably be modules
       class HandshakeRequest < Request
         def initialize(name, cert)
           super('handshake', { 'name' => name, 'cert' => cert  })
