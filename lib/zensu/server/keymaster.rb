@@ -1,11 +1,19 @@
 module Zensu
   module Server
-    class Authenticator
+    class Keymaster
       include Celluloid::ZMQ
 
       include RPC::Encoding
       include RPC::Handshake
       include SSL
+
+      #TODO make this socket a more general request/reply handler. Could be used for other things like:
+      # * querying the server for config information
+      # * other kinds of queries?
+      #
+      # The socket is owned by a general request/reply handler that routes to specific handlers based on method.
+      # These method handlers don't need to be actors since the req/rep sockets are synchronous.
+      # request/response methods and handlers can be defined in the same module.
 
       def initialize
         @socket = Celluloid::ZMQ::RepSocket.new

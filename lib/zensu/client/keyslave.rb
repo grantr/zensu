@@ -1,6 +1,6 @@
 module Zensu
   module Client
-    class Authenticator
+    class Keyslave
       include Celluloid::ZMQ
 
       include RPC::Encoding
@@ -36,6 +36,8 @@ module Zensu
         request = encode HandshakeRequest.new("client_name", certificate.to_pem)
         puts "sending request: #{request}"
         @socket << request
+        #TODO handle timeouts
+        # crash after timing out
         reply = @socket.read
         puts "got reply: #{reply}"
         response = HandshakeResponse.parse(decode(reply))
