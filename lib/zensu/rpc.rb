@@ -9,6 +9,35 @@ module Zensu
       end
     end
 
+    #TODO we need the ability to declare requests and responses.
+    
+    # HandshakeRequest
+    #   # param defines a key in the params hash
+    #   param :cert, required: true
+    #   param :name
+    #
+    #   method 'auth' # method is automatically validated
+    #
+    #   validate do
+    #     # check params
+    #   end
+    #
+    #
+    # HandshakeResponse
+    #  # result defines a key in the results hash
+    #  result :cert, required: true
+    #  result :shared_key
+    #
+    #  validate do
+    #    # check results
+    #  end
+    #
+    #  on_error 'blah' do
+    #    # do something, maybe raise
+    #  end
+    #
+    #  on_error /blah/ => 'error string' # set error string
+
     Notification = Struct.new(:method, :params) do
       include Envelope
 
