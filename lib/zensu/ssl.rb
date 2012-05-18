@@ -4,95 +4,25 @@ require 'base64'
 module Zensu
   module SSL
     def ca_certificate
-      @ca_certificate ||= OpenSSL::X509::Certificate.new <<EOC
------BEGIN CERTIFICATE-----
-MIIDVDCCAjygAwIBAgIBGTANBgkqhkiG9w0BAQsFADA7MRMwEQYKCZImiZPyLGQB
-GRYDY29tMRcwFQYKCZImiZPyLGQBGRYHZXhhbXBsZTELMAkGA1UEAwwCaGkwHhcN
-MTIwNTE3MjIxNDI0WhcNMTQwNTE3MjIxNDI0WjA7MRMwEQYKCZImiZPyLGQBGRYD
-Y29tMRcwFQYKCZImiZPyLGQBGRYHZXhhbXBsZTELMAkGA1UEAwwCaGkwggEiMA0G
-CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC18dTuBp+p4ruIJpD/iwbeOVCvy3ZR
-6yFxcYgXnVWKS5cp8Bl4o9sm+Wpdx+ul87l9u9BFBlgm8PJPnl3FU3jQhe+1MzQs
-Cld2ZXRrhqMRzC5CRuZDsc3I8JBjn2HXbZDxfGm1qdD6eK5LZGttw+6+I+yCBVXs
-6E/cm5AFnR4debmPK96fXiCYM0f6i2gG3pcNPj4Eg5YpQ7ViQRfBgccHpV1QsxMy
-/yoFWgYz00oBPBNCEbSggDjzxcib3muVa4Hq3FuKtekHmgO/CBPn//pH2DNVeYJ3
-dizKq5awkixbWs7eHdtfShdaPNBMHRZx8crtCjGU3FeYm5Kb5StEM+3zAgMBAAGj
-YzBhMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRp
-Q56/LoRwBUGp5D/AVmKo9wR7yjAfBgNVHSMEGDAWgBRpQ56/LoRwBUGp5D/AVmKo
-9wR7yjANBgkqhkiG9w0BAQsFAAOCAQEAmrixiLb/zmHYyEK+PwOBE+JyYCDJWZRW
-YmaYXERWOoLYHD1lpix/SZK9ikk2BuQCaGPiwvqlgInB0IllnM5B8Iugr/jzCbfv
-uaXiW0vvLT57BxSjXoOe6c4INHyxRoZMRR8RJrMKIgfjCAGM1RTbhWtIo/jJiUaH
-7samB1i52nOB56yxWtk3tGUL4z6PVlnYlOJTBSozTPCwCNdP5UK6sBiH+SCLh1kN
-BPLrP4rpHwzDL+W0DaDsMCaTpIaFzhLRatmM6cyHQvNVdxOOVA0S9vPBPcIh83DI
-JZtTJButNGlYcHU7V/LPcWclWFsDBj4jYZHYg0sN53i2r9Bpty4j8Q==
------END CERTIFICATE-----
-EOC
-#DEBUG
+      @ca_certificate ||= OpenSSL::X509::Certificate.new Zensu.settings.ssl.cacert
     end
 
     def certificate
-      @certificate ||= OpenSSL::X509::Certificate.new <<EOC
------BEGIN CERTIFICATE-----
-MIIDJjCCAg6gAwIBAgIBDTANBgkqhkiG9w0BAQsFADA7MRMwEQYKCZImiZPyLGQB
-GRYDY29tMRcwFQYKCZImiZPyLGQBGRYHZXhhbXBsZTELMAkGA1UEAwwCaGkwHhcN
-MTIwNTE3MjIxNDMyWhcNMTMwNTE3MjIxNDMyWjA/MRMwEQYKCZImiZPyLGQBGRYD
-Y29tMRcwFQYKCZImiZPyLGQBGRYHZXhhbXBsZTEPMA0GA1UEAwwGY2xpZW50MIIB
-IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApuXw/aaL2z2gb88oHX16Lh44
-/3BneclzAHXHEwsaSp8F9r/haebX6IYFamTjgm0u4JMTluv6achh3m2Gn4rRJ0pZ
-kP8YGirhfBdmou92IOzTQyFREb6yWJjfwD3pfqekfbq0bWuwxOwXbGo+ZJ6M2o0t
-/yvXEHSKTB3QL0thfJXhdvCd1oZ+t+9ji0eSDrIMQC6/gfsqj7Y4d4F1Y5vjGNqx
-XJgSm9EMcnNB9bc3QcoLiIsG37niqcfCDN+NQ1gw61h3JOqr6QDiHxGDg9N80Bpz
-2xfQWn9scVJIXIFC6BJNON47VVTOYKguCoEUQvwzDK9GKTaTFN2kURQa4N8ZwQID
-AQABozEwLzAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFALXR0Lch7i6kUNBmSrk
-z9FfDPCEMA0GCSqGSIb3DQEBCwUAA4IBAQA6pMbPRAzQf9jl3nFUGNL3EjWxMlvS
-ZWLDhYVHgck4TZN3Txl20e/6z+vmEAb9/bZknMBkM4NYh0GoA/vMmeB4w3L8kDQu
-NB1eYKWoVwXj3e8UpIvUizfUvJ83w2aWKBcv4ozjeINFloIOe53fW7GbVRB5meQx
-vr6yN9O5wnpB/9Q4k8tBoYPP+BLmH0L0afbX9ChXNr9+jWXcGBewWEwSBx4XuOSS
-vgCp01RaEEpP7Lna6udi2GumHuDy5PMRTdSj32tITB9l/WZ9n418cAJsYi+UpTy2
-CcZo4KUZEyXz5mIRVLr927nNF6C1wVtuLhC//mr+wbQ2+/xZ6wnBa+2A
------END CERTIFICATE-----                                                    
-EOC
-#DEBUG
+      @certificate ||= OpenSSL::X509::Certificate.new Zensu.settings.ssl.cert
     end
 
     def private_key
-      @private_key ||= OpenSSL::PKey::RSA.new <<EOK
------BEGIN RSA PRIVATE KEY-----
-MIIEowIBAAKCAQEApuXw/aaL2z2gb88oHX16Lh44/3BneclzAHXHEwsaSp8F9r/h
-aebX6IYFamTjgm0u4JMTluv6achh3m2Gn4rRJ0pZkP8YGirhfBdmou92IOzTQyFR
-Eb6yWJjfwD3pfqekfbq0bWuwxOwXbGo+ZJ6M2o0t/yvXEHSKTB3QL0thfJXhdvCd
-1oZ+t+9ji0eSDrIMQC6/gfsqj7Y4d4F1Y5vjGNqxXJgSm9EMcnNB9bc3QcoLiIsG
-37niqcfCDN+NQ1gw61h3JOqr6QDiHxGDg9N80Bpz2xfQWn9scVJIXIFC6BJNON47
-VVTOYKguCoEUQvwzDK9GKTaTFN2kURQa4N8ZwQIDAQABAoIBAHeVnn1AjklC+Ofk
-OMwYkijlQtXURnA+5YXY3hFJDUeWdgF9LxhgbSeQj+TR8SoM7V/AQnMLFlwhVe63
-75P1NTO/1DlOboihXPs7ETGB/tRMnHsnLh1W1BcjQn9OXTWBDR2BX7JfTUNsHsRx
-w874w9f8/I4vbWO+/TDY08hvbKSE387D7Wa3+cICnfGZYyBibby3xYvb6hH9dH4N
-nrxFdw+FsbuG1Vf/KTEMRqc4LqK6g4deWllKyeAiQ604sh39EXmvPXTtp6Td+6W8
-acpkwg9qXgiLyVJtO1FcwAwaTqs0p0RrFhpEy2je4QUqdATlOBx7PMIO8+fCZo3L
-lU/tuqECgYEA0dH59eTxWpE9tbLUShZb/iKQWO+q/rx3wHayGjiBEXiyC3n/wYPF
-N1JjSiw8qnLexlngiNO3qEf0APXen3r3Iysqu4OHewt6CCHScy9Fu2it1zJggcq5
-UMlQld1aHFIYJr5w8WJzucoftPd5o42kvUu1WDFkvYErGdE1tdNkOq0CgYEAy6GV
-vDLXtCFORf1lATKVlp6Y52hcJ4TUYyibTJdXYTetvQxRrhhWfgRkfg3DDBmclxbH
-AZZEnLx/rfJEpzktxzOsjfolShT7uMpAQT0FcznYjB0ZeHZKKPdOcDXkLZalXPpw
-+3V/IFrFLCw1MflW0nSwY/qczPAGgY7DEJvZseUCgYAnCiy6JekKcu/KeQWq61Ie
-jQvSoHVuhF67vtoQqubI+24VWJPPy9bMHlY/HNAE3u64dUyj6NDJTOoHq7fKcLS/
-JG8FCMoSiOYh0Tk5GVieMDH4UnVGcRPeBjcqS09S6at4ugKFx03FCeiwYUOOvPIk
-DowlZrtZz0jXuueFd1m02QKBgQDIC6rtI0mTVXDvAzu6DHa2bIIsO/Lkg/Keo2LF
-wJwADtHoufR4QsKdtDUBPQXTmkmiiKbioTwwemI4gZv+aAbX/qTTKd5+Q9TzOgYb
-0RXMmBRruZ6vIA5E5oexZtAOFUPI7uQVtN057NJtTdTIjnpD8Izk+2wVTOwnVRe+
-9kzMHQKBgHh+QSsibNaUMZIUgrqeV+bRC5ugQ8JWcGoOnB2cfVQaUDkrfA8YO4UO
-4BPA9rM/Vnxhx5wEOenJtDfp0wtDfFDlAfIE4YB7LZhxO2QSuME5LqKFZoRnrbnu
-A6Mup4smc0yONjhHcUeByDYr7Qp/F3qfk2rMORxsevPB3o7Fxlyf
------END RSA PRIVATE KEY-----
-EOK
-#DEBUG
+      @private_key ||= OpenSSL::PKey::RSA.new Zensu.settings.ssl.key
     end
 
     def valid_certificate?(cert)
+      #TODO should request object take care of this? - assume we have a cert object here
       cert = cert.is_a?(String) ? OpenSSL::X509::Certificate.new(cert) : cert
       cert.verify(ca_certificate.public_key)
     end
     
     def public_encrypt(cert, string)
+      #TODO should request object take care of this? - assume we have a key object here
       cert = cert.is_a?(String) ? OpenSSL::X509::Certificate.new(cert) : cert
       Base64.urlsafe_encode64(cert.public_key.public_encrypt(string))
     end

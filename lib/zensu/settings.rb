@@ -3,7 +3,7 @@ require 'multi_json'
 
 module Zensu
   class Settings < Hashie::Mash
-    def self.load_file(filename)
+    def self.load(filename)
       new MultiJson.load(File.read(filename))
     end
 
@@ -15,5 +15,26 @@ module Zensu
       #TODO validate required sections
       true
     end
+    
+    def ssl
+      @ssl ||= SSL.new(self['ssl'])
+    end
+
+    class SSL < Hashie::Mash
+      #TODO if relative paths join with top level config path
+      #TODO should these raise on missing or return nil or empty string?
+      def cert
+        @cert ||= File.read(cert_file)
+      end
+
+      def cacert
+        @cacert ||= File.read(cacert_file)
+      end
+
+      def key
+        @key ||= File.read(key_file)
+      end
+    end
+
   end
 end
