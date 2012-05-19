@@ -31,7 +31,7 @@ module Zensu
         #TODO make this a state machine that transitions when key becomes valid/invalid
 
         def request
-          Request.new("handshake", {name: "client_name", cert: certificate.to_pem})
+          Request.new("handshake", {name: Zensu.settings.client.name, cert: certificate.to_pem})
         end
 
         def handle_response(response)
