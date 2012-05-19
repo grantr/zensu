@@ -35,7 +35,7 @@ module Zensu
       def start_handlers
         @handlers = {}
         self.class.handler_classes.each do |method, handler_class|
-          @handlers[method] = handler_class.new_link
+          @handlers[method] = handler_class.supervise
         end
       end
 

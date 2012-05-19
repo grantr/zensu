@@ -41,7 +41,7 @@ module Zensu
       def start_requesters
         @requesters = {}
         self.class.requester_classes.each do |method, requester_class|
-          @requesters[method] = requester_class.new_link
+          @requesters[method] = requester_class.supervise
         end
       end
 
