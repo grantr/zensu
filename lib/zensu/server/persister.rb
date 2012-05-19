@@ -13,8 +13,11 @@ module Zensu
         redis = Redis::Namespace.new namespace, :redis => Redis.new #TODO configure redis
       end
 
+      # TODO allow usage of fakeredis or even non-redis databases like zookeeper
+      # could likely simulate all required redis ops with any consistent kv store
+
       #TODO what is the api?
-      #sensu uses:
+      #sensu server uses:
       #
       # generally:
       # get
@@ -43,6 +46,13 @@ module Zensu
       # for election:
       # setnx
       # getset
+      # del
+      #
+      # sensu api uses:
+      # smembers
+      # get
+      # hgetall
+      # srem
       # del
     end
   end
