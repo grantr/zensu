@@ -48,10 +48,13 @@ module Zensu
       def process_request(requester, *args)
         request = requester.request(*args)
         puts "sending request: #{request}"
+        
         @socket << encode(request)
-        #TODO handle timeouts
-        # crash after timing out
+
+        # TODO configurable timeout
+        @timeout = after(5) { terminate } #TODO log termination
         response = RPC::Response.parse(decode(@socket.read))
+        @timeout.cancel
 
         puts "got reply: #{response}"
         requester.handle_response response
