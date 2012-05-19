@@ -10,15 +10,14 @@ require 'zensu/settings'
 
 require 'zensu/rpc'
 require 'zensu/rpc/encoding'
+require 'zensu/rpc/ssl'
 require 'zensu/rpc/handshake'
 
-require 'zensu/ssl'
-
-require 'zensu/server/authenticator'
+require 'zensu/server/responder'
 require 'zensu/server/publisher'
 require 'zensu/server/puller'
 
-require 'zensu/client/authenticator'
+require 'zensu/client/requester'
 require 'zensu/client/pusher'
 require 'zensu/client/subscriber'
 

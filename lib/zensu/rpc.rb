@@ -3,46 +3,31 @@ require 'securerandom'
 module Zensu
   module RPC
 
+    class Handler
+      include Celluloid
+
+      def respond(request)
+        #TODO validate request, handle errors, etc
+        handle(request)
+      end
+    end
+
+    class Requester
+      include Celluloid
+
+    end
+
     module Envelope
       def envelope
         { 'jsonrpc' => '2.0' }
       end
     end
 
-    #TODO we need the ability to declare requests and responses.
-    
-    # HandshakeRequest
-    #   # param defines a key in the params hash
-    #   param :cert, required: true
-    #   param :name
-    #
-    #   method 'auth' # method is automatically validated
-    #
-    #   validate do
-    #     # check params
-    #   end
-    #
-    #
-    # HandshakeResponse
-    #  # result defines a key in the results hash
-    #  result :cert, required: true
-    #  result :shared_key
-    #
-    #  validate do
-    #    # check results
-    #  end
-    #
-    #  on_error 'blah' do
-    #    # do something, maybe raise
-    #  end
-    #
-    #  on_error /blah/ => 'error string' # set error string
-
     Notification = Struct.new(:method, :params) do
       include Envelope
 
       def self.parse(body)
-        Notification.new body['method'], body['params']
+        new body['method'], body['params']
       end
 
       def as_json
@@ -57,7 +42,7 @@ module Zensu
       attr_accessor :id
 
       def self.parse(body)
-        Request.new body['method'], body['params'], body['id']
+        new body['method'], body['params'], body['id']
       end
 
       def initialize(method, params, id=nil)
@@ -76,7 +61,7 @@ module Zensu
       include Envelope
 
       def self.parse(body)
-        Response.new body['result'], body['error'], body['id']
+        new body['result'], body['error'], body['id']
       end
 
       def as_json
