@@ -3,11 +3,6 @@ require 'securerandom'
 
 module Zensu
   class CLI < Thor
-    desc "example", "an example task"
-    def example
-      puts "I'm a thor task!"
-    end
-
     desc "root_ca", "Generate a Root CA"
     method_option :name, type: :string, desc: "Common name"
     method_option :key_file,  type: :string, desc: "Key output file",  default: "cakey.pem"
