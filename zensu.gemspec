@@ -24,4 +24,5 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "redis-namespace"
   gem.add_runtime_dependency "thor"
   gem.add_runtime_dependency "hashie"
+  gem.add_runtime_dependency "cabin"
 end

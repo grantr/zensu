@@ -42,7 +42,7 @@ module Zensu
       def run
         while true
           request = @socket.read
-          puts "received request: #{request}"
+          Zensu.logger.debug "received request: #{request}"
           #TODO validate request
           dispatch RPC::Request.parse(decode(request))
         end
@@ -59,7 +59,7 @@ module Zensu
         else
           #TODO respond with unknown method error
         end
-        puts "sending response: #{response}"
+        Zensu.logger.debug "sending response: #{response}"
         @socket << encode(response)
       end
 

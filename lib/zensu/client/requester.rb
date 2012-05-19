@@ -47,7 +47,7 @@ module Zensu
 
       def process_request(requester, *args)
         request = requester.request(*args)
-        puts "sending request: #{request}"
+        Zensu.logger.debug "sending request: #{request}"
         
         @socket << encode(request)
 
@@ -56,7 +56,7 @@ module Zensu
         response = RPC::Response.parse(decode(@socket.read))
         @timeout.cancel
 
-        puts "got reply: #{response}"
+        Zensu.logger.debug "got reply: #{response}"
         requester.handle_response response
       end
 

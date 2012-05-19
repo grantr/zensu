@@ -6,6 +6,8 @@ require 'zensu/celluloid_ext'
 
 Celluloid::ZMQ.init
 
+require 'cabin'
+
 require 'zensu/settings'
 
 require 'zensu/rpc'
@@ -28,5 +30,12 @@ module Zensu
 
   def self.settings
     @settings
+  end
+
+  def self.logger
+    @logger ||= Cabin::Channel.get
+    @logger.subscribe(STDOUT)
+    @logger.level = :debug #TODO configurable log level
+    @logger
   end
 end
