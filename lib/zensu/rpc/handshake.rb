@@ -2,7 +2,7 @@ module Zensu
   module RPC
     module Handshake
 
-      class Keymaster < RPC::Handler
+      class Keymaster < Responder
         include SSL
 
         #TODO add loop to check for updated key
@@ -25,7 +25,7 @@ module Zensu
 
       end
 
-      class Keyslave < RPC::Requester
+      class Keyslave < Requester
         include SSL
 
         #TODO make this a state machine that transitions when key becomes valid/invalid

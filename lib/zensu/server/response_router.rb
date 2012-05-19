@@ -1,21 +1,21 @@
 module Zensu
   module Server
-    class Responder
+    class ResponseRouter
       include Celluloid::ZMQ
 
       include RPC::Encoding      
       
-      def self.handle(method, options)
-        @handler_classes ||= {}
-        @handler_classes[method.to_sym] = options[:with]
+      def self.respond_to(method, options)
+        @responder_classes ||= {}
+        @responder_classes[method.to_sym] = options[:with]
       end
 
-      def self.handler_classes
-        @handler_classes
+      def self.responder_classes
+        @responder_classes
       end
 
-      # handlers
-      handle :handshake, with: RPC::Handshake::Keymaster
+      # responders
+      respond_to :handshake, with: RPC::Handshake::Keymaster
 
       def initialize
         @socket = Celluloid::ZMQ::RepSocket.new
@@ -27,15 +27,15 @@ module Zensu
           raise
         end
 
-        start_handlers
+        start_responders
 
         run!
       end
 
-      def start_handlers
-        @handlers = {}
-        self.class.handler_classes.each do |method, handler_class|
-          @handlers[method] = handler_class.supervise
+      def start_responders
+        @responders = {}
+        self.class.responder_classes.each do |method, responder_class|
+          @responders[method] = responder_class.supervise
         end
       end
 
@@ -53,9 +53,9 @@ module Zensu
       end
 
       def dispatch(request)
-        handler = handler_for(request)
-        if handler
-          response = handler.respond(request)
+        responder = responder_for(request)
+        if responder
+          response = responder.respond(request)
         else
           #TODO respond with unknown method error
         end
@@ -63,8 +63,8 @@ module Zensu
         @socket << encode(response)
       end
 
-      def handler_for(request)
-        @handlers[request.method.to_sym]
+      def responder_for(request)
+        @responders[request.method.to_sym]
       end
 
     end

@@ -1,6 +1,6 @@
 module Zensu
   module Client
-    class Requester
+    class RequestRouter
       include Celluloid::ZMQ
 
       include RPC::Encoding

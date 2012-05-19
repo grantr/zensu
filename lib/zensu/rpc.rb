@@ -3,7 +3,7 @@ require 'securerandom'
 module Zensu
   module RPC
 
-    class Handler
+    class Responder
       include Celluloid
 
       def respond(request)
