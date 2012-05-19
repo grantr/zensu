@@ -36,6 +36,15 @@ module Zensu
           h['params'] = params if !params.nil? && !params.empty?
         end
       end
+
+      def method_missing(method, *args, &block)
+        if params.respond_to?(:has_key?) && params.has_key?(method.to_s) && args.empty?
+          params[method.to_s]
+        else
+          super
+        end
+      end
+
     end
 
     class Request < Notification
@@ -78,6 +87,14 @@ module Zensu
 
       def success?
         !result.nil?
+      end
+
+      def method_missing(method, *args, &block)
+        if result.respond_to?(:has_key?) && result.has_key?(method.to_s) && args.empty?
+          result[method.to_s]
+        else
+          super
+        end
       end
     end
     
