@@ -4,10 +4,13 @@ module Zensu
     module Encoding
       include RPC::SSL
 
+      VERSION_STRING = '1'
+
+
       def encode(message)
-        encoded_message = message.respond_to?(:as_json) ? message.as_json : message
+        message = message.respond_to?(:as_json) ? message.as_json : message
         if authenticated?
-          encrypt_message MultiJson.dump(encoded_message)
+          encrypt_message MultiJson.dump(message)
         else
           MultiJson.dump message
         end
@@ -22,16 +25,15 @@ module Zensu
       end
 
       def encrypted_envelope
-        { 'v' => 1, 'cipher' => Zensu.settings.ssl.cipher }
+        { 'v' => VERSION_STRING, 'cipher' => Zensu.settings.ssl.cipher }
       end
 
       def encrypt_message(message)
-        payload = symmetric_encrypt Zensu.settings.ssl.shared_key, message
         # This v is NOT using semantic versioning since this is a container format
         # rather than an api.
-        MultiJson.dump encrypted_envelope.tap do |e|
-          e['payload'] = payload
-        end
+        MultiJson.dump(encrypted_envelope.tap do |e|
+          e['payload'] = symmetric_encrypt Zensu.settings.ssl.shared_key, message
+        end)
       end
 
       def decrypt_message(message)

@@ -5,6 +5,7 @@ describe Zensu::RPC::SSL do
   subject { described_class.new }
 
   before(:each) do
+    # for ssl certs
     Zensu.settings = Zensu::Settings.load(config_file('config.json'))
   end
 
@@ -33,8 +34,8 @@ describe Zensu::RPC::SSL do
   end
 
   it 'generates base64-encoded random shared keys' do
-    subject.generate_shared_key(16).bytesize.should be >= 16 
-    subject.generate_shared_key(16).should be_base64
+    subject.generate_shared_key(32).bytesize.should be >= 32
+    subject.generate_shared_key(32).should be_base64
   end
 
   it 'should generate random initialization vectors with specific length' do
@@ -42,13 +43,13 @@ describe Zensu::RPC::SSL do
   end
 
   it 'should encrypt and decrypt strings' do
-    key = OpenSSL::Random.random_bytes(256)
+    key = OpenSSL::Random.random_bytes(32)
     data = subject.symmetric_encrypt(key, "omg symmetric encryption")
     subject.symmetric_decrypt(key, data).should == "omg symmetric encryption"
   end
 
   it 'should encode symmetric encrypted data with base64' do
-    key = OpenSSL::Random.random_bytes(256)
+    key = OpenSSL::Random.random_bytes(32)
     data = subject.symmetric_encrypt(key, "omg symmetric encryption").should be_base64
   end
 
