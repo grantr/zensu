@@ -9,9 +9,6 @@ end
 
 require 'zensu'
 
-# Squelch the logger (comment out this line if you want it on for debugging)
-#Zensu.logger = nil
-
 Dir['./spec/support/*.rb'].map {|f| require f }
 
 RSpec.configure do |config|
