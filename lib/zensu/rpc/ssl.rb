@@ -25,17 +25,17 @@ module Zensu
       def public_encrypt(cert, string)
         #TODO should request object take care of this? - assume we have a key object here
         cert = cert.is_a?(String) ? OpenSSL::X509::Certificate.new(cert) : cert
-        Base64.encode64(cert.public_key.public_encrypt(string))
+        Base64.strict_encode64(cert.public_key.public_encrypt(string))
       end
 
       def private_decrypt(key, string)
         key = key.is_a?(String) ? OpenSSL::PKey::RSA.new(key) : key
-        key.private_decrypt(Base64.decode64(string))
+        key.private_decrypt(Base64.strict_decode64(string))
       end
 
       def generate_shared_key(length)
         # This is what Cipher#random_key uses (plus base64)
-        Base64.encode64 OpenSSL::Random.random_bytes(length)
+        Base64.strict_encode64 OpenSSL::Random.random_bytes(length)
       end
 
       def generate_iv(length)
@@ -54,13 +54,13 @@ module Zensu
         encrypted = cipher.update(data) + cipher.final
         # iv is public, so ok to send it plain
         encrypted.prepend(iv)
-        Base64.encode64(encrypted)
+        Base64.strict_encode64(encrypted)
       end
 
       def symmetric_decrypt(key, string)
         cipher.decrypt
         cipher.key = key
-        decoded_string = Base64.decode64(string)
+        decoded_string = Base64.strict_decode64(string)
         iv, data = decoded_string[0..cipher.iv_len-1], decoded_string[cipher.iv_len..-1]
         cipher.iv = iv
         cipher.update(data) + cipher.final
