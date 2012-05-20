@@ -54,8 +54,7 @@ module Zensu
         cipher.key = key
         encrypted = cipher.update(data) + cipher.final
         # iv is public, so ok to send it plain
-        encrypted.prepend(iv)
-        Base64.strict_encode64(encrypted)
+        Base64.strict_encode64(iv + encrypted)
       end
 
       def symmetric_decrypt(key, string)
