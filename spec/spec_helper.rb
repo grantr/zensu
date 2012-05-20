@@ -1,5 +1,8 @@
-require 'rubygems'
 require 'bundler/setup'
+
+require 'simplecov'
+SimpleCov.start
+
 require 'zensu'
 
 # Squelch the logger (comment out this line if you want it on for debugging)
