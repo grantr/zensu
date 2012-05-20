@@ -1,6 +1,8 @@
 # Zensu
 
-TODO: Write a gem description
+[![Dependency Status](https://gemnasium.com/grantr/zensu.png)](https://gemnasium.com/grantr/zensu)
+
+Zensu is a work-in-progress on a clone of sensu using zeromq as a transport instead of rabbitmq.
 
 ## Installation
 
@@ -18,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Can't use it yet!
 
 ## Contributing
 
