@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe Zensu::Settings do
-  def config_file(filename)
-    File.join(File.dirname(__FILE__), '..', filename)
-  end
-
   it 'has default values' do
     subject.checks.should == {}
     subject.handlers.should == {}
