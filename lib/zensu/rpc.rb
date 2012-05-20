@@ -2,6 +2,7 @@ require 'securerandom'
 
 module Zensu
   module RPC
+    VERSION_STRING = '1.0.0'
 
     class Responder
       include Celluloid
@@ -23,7 +24,7 @@ module Zensu
         # major bump: backwards incompatible
         # minor bump: backwards compatible with new features
         # patch bump: backwards compatible bug fixes
-        { 'jsonrpc' => '2.0', 'v' => '1.0.0' }
+        { 'jsonrpc' => '2.0', 'v' => VERSION_STRING }
       end
     end
 
@@ -58,7 +59,7 @@ module Zensu
         new body['method'], body['params'], body['id']
       end
 
-      def initialize(method, params, id=nil)
+      def initialize(method, params=nil, id=nil)
         super(method, params)
         self.id = id || SecureRandom.uuid
       end
