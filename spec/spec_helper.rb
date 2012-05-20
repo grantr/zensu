@@ -1,8 +1,10 @@
 require 'bundler/setup'
 
-if ENV['COVERAGE'] == 'true'
+if ENV['COVERAGE'] == 'true' && (RUBY_ENGINE == "ruby")
   require 'simplecov'
-  SimpleCov.start
+  SimpleCov.start do
+    add_filter '/spec/'
+  end
 end
 
 require 'zensu'
