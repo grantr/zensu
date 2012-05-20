@@ -11,8 +11,8 @@ require 'cabin'
 require 'zensu/settings'
 
 require 'zensu/rpc'
-require 'zensu/rpc/encoding'
 require 'zensu/rpc/ssl'
+require 'zensu/rpc/encoding'
 require 'zensu/rpc/handshake'
 
 require 'zensu/server/response_router'
@@ -29,7 +29,7 @@ module Zensu
   end
 
   def self.settings
-    @settings
+    @settings ||= Zensu::Settings.new
   end
 
   def self.logger

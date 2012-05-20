@@ -23,17 +23,22 @@ module Zensu
     class SSL < Hashie::Mash
       #TODO if relative paths join with top level config path
       #TODO should these raise on missing or return nil or empty string?
-      def cert
-        @cert ||= File.read(cert_file)
+      def certificate
+        self['certificate'] ||= File.read(cert_file)
       end
 
       def cacert
-        @cacert ||= File.read(cacert_file)
+        self['cacert']||= File.read(cacert_file)
       end
 
-      def key
-        @key ||= File.read(key_file)
+      def private_key
+        self['private_key'] ||= File.read(key_file)
       end
+
+      def cipher
+        self['cipher'] ||= 'AES-256-CBC'
+      end
+
     end
 
   end

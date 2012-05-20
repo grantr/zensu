@@ -9,7 +9,10 @@ module Zensu
 
         def handle(request)
           if valid_certificate?(request.cert)
-            result = { 'cert' => certificate.to_pem, 'shared_key' => public_encrypt(request.cert, shared_key) }
+            result = { 
+              'cert' => certificate.to_pem, 
+              'cipher' => Zensu.settings.ssl.cipher,
+              'shared_key' => public_encrypt(request.cert, shared_key) }
             Response.new(result, nil, request.id)
           else
             #TODO errors
@@ -18,15 +21,15 @@ module Zensu
         end
 
         def shared_key
-          "bacon" #TODO get the shared key from redis
+          @shared_key ||= generate_shared_key(cipher.key_len) #TODO get/set the shared key in redis
         end
-
       end
 
       class Keyslave < Requester
         include SSL
 
         #TODO make this a state machine that transitions when key becomes valid/invalid
+        #TODO there should be an actor that manages authentication. all rpc actors are supervised by this class and restarted when it detects that handshake needs to happen again
 
         def request
           Request.new("handshake", {name: Zensu.settings.client.name, cert: certificate.to_pem})
@@ -35,20 +38,13 @@ module Zensu
         def handle_response(response)
           #TODO retry if handshake failed
           if valid_certificate?(response.cert)
-            @shared_key = private_decrypt(private_key, response.shared_key)
+            Zensu.settings.ssl.shared_key = private_decrypt(private_key, response.shared_key)
+            Zensu.settings.ssl.cipher = response.cipher
           else
-            @shared_key = nil
+            Zensu.settings.ssl.shared_key = nil
           end
+          #TODO state transition
         end
-
-        def authenticated?
-          !@shared_key.nil?
-        end
-
-        def shared_key
-          @shared_key
-        end
-
       end
     end
   end

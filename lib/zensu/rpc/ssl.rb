@@ -9,11 +9,11 @@ module Zensu
       end
 
       def certificate
-        @certificate ||= OpenSSL::X509::Certificate.new Zensu.settings.ssl.cert
+        @certificate ||= OpenSSL::X509::Certificate.new Zensu.settings.ssl.certificate
       end
 
       def private_key
-        @private_key ||= OpenSSL::PKey::RSA.new Zensu.settings.ssl.key
+        @private_key ||= OpenSSL::PKey::RSA.new Zensu.settings.ssl.private_key
       end
 
       def valid_certificate?(cert)
@@ -33,6 +33,38 @@ module Zensu
         key.private_decrypt(Base64.urlsafe_decode64(string))
       end
 
+      def generate_shared_key(length)
+        # This is what Cipher#random_key uses (plus base64)
+        Base64.encode64 OpenSSL::Random.random_bytes(length)
+      end
+
+      def generate_iv(length)
+        # This is what Cipher#random_iv uses
+        OpenSSL::Random.random_bytes(length)
+      end
+      
+      def cipher
+        @cipher ||= OpenSSL::Cipher::Cipher.new(Zensu.settings.ssl.cipher)
+      end
+
+      def symmetric_encrypt(key, data)
+        cipher.encrypt
+        cipher.iv = iv = generate_iv(cipher.iv_len)
+        cipher.key = key
+        encrypted = cipher.update(data) + cipher.final
+        # iv is public, so ok to send it plain
+        encrypted.prepend(iv)
+        Base64.encode64(encrypted)
+      end
+
+      def symmetric_decrypt(key, string)
+        cipher.decrypt
+        cipher.key = key
+        decoded_string = Base64.decode64(string)
+        iv, data = decoded_string[0..cipher.iv_len-1], decoded_string[cipher.iv_len..-1]
+        cipher.iv = iv
+        cipher.update(data) + cipher.final
+      end
     end
   end
 end
