@@ -43,13 +43,13 @@ describe Zensu::RPC::SSL do
   end
 
   it 'should encrypt and decrypt strings' do
-    key = OpenSSL::Random.random_bytes(32)
+    key = SecureRandom.random_bytes(32)
     data = subject.symmetric_encrypt(key, "omg symmetric encryption")
     subject.symmetric_decrypt(key, data).should == "omg symmetric encryption"
   end
 
   it 'should encode symmetric encrypted data with base64' do
-    key = OpenSSL::Random.random_bytes(32)
+    key = SecureRandom.random_bytes(32)
     data = subject.symmetric_encrypt(key, "omg symmetric encryption").should be_base64
   end
 

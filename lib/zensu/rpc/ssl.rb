@@ -1,5 +1,6 @@
 require 'openssl'
 require 'base64'
+require 'securerandom'
 
 module Zensu
   module RPC
@@ -35,12 +36,12 @@ module Zensu
 
       def generate_shared_key(length)
         # This is what Cipher#random_key uses (plus base64)
-        Base64.strict_encode64 OpenSSL::Random.random_bytes(length)
+        Base64.strict_encode64 SecureRandom.random_bytes(length)
       end
 
       def generate_iv(length)
         # This is what Cipher#random_iv uses
-        OpenSSL::Random.random_bytes(length)
+        SecureRandom.random_bytes(length)
       end
       
       def cipher

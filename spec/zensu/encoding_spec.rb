@@ -25,7 +25,7 @@ describe Zensu::RPC::Encoding do
   end
 
   it 'encrypts messages with an envelope' do
-    Zensu.settings.ssl.shared_key = OpenSSL::Random.random_bytes(32)
+    Zensu.settings.ssl.shared_key = SecureRandom.random_bytes(32)
     envelope = MultiJson.load subject.encode('foo' => 'bar')
 
     envelope['cipher'].should == 'AES-256-CBC'
@@ -34,7 +34,7 @@ describe Zensu::RPC::Encoding do
   end
 
   it 'encodes and decodes encrypted messages' do
-    Zensu.settings.ssl.shared_key = OpenSSL::Random.random_bytes(32)
+    Zensu.settings.ssl.shared_key = SecureRandom.random_bytes(32)
     encoded = subject.encode('foo' => 'bar')
     subject.decode(encoded).should include('foo' => 'bar')
   end
