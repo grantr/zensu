@@ -31,6 +31,10 @@ shared_context 'a Notification' do
     subject.foo.should == 'bar'
   end
 
+  it 'raises on nonexistent param methods' do
+    -> { subject.foo2 }.should raise_error(NoMethodError)
+  end
+
   it 'parses a decoded json string' do
     subject = described_class.parse(MultiJson.load(%({"jsonrpc":"2.0","method":"method","params":{"foo":"bar"}})))
     subject.method.should == 'method'
@@ -102,6 +106,10 @@ describe Zensu::RPC::Response do
 
   it 'responds to result methods' do
     subject.foo.should == 'bar'
+  end
+
+  it 'raises on nonexistent result methods' do
+    -> { subject.foo2 }.should raise_error(NoMethodError)
   end
 
   it 'includes the jsonrpc envelope' do
