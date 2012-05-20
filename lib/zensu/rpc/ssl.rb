@@ -4,8 +4,8 @@ require 'base64'
 module Zensu
   module RPC
     module SSL
-      def ca_certificate
-        @ca_certificate ||= OpenSSL::X509::Certificate.new Zensu.settings.ssl.cacert
+      def cacert
+        @cacert ||= OpenSSL::X509::Certificate.new Zensu.settings.ssl.cacert
       end
 
       def certificate
@@ -19,7 +19,7 @@ module Zensu
       def valid_certificate?(cert)
         #TODO should request object take care of this? - assume we have a cert object here
         cert = cert.is_a?(String) ? OpenSSL::X509::Certificate.new(cert) : cert
-        cert.verify(ca_certificate.public_key)
+        cert.verify(cacert.public_key)
       end
 
       def public_encrypt(cert, string)
