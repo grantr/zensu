@@ -38,4 +38,8 @@ module Zensu
     @logger.level = :debug #TODO configurable log level
     @logger
   end
+
+  def self.logger=(logger)
+    @logger = logger
+  end
 end
