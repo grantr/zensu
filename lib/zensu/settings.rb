@@ -4,7 +4,11 @@ require 'multi_json'
 module Zensu
   class Settings < Hashie::Mash
     def self.load(filename)
-      new MultiJson.load(File.read(filename))
+      parse File.read(filename)
+    end
+    
+    def self.parse(string)
+      new MultiJson.load(string)
     end
 
     # TODO if there is no config, use default values.
@@ -18,6 +22,14 @@ module Zensu
     
     def ssl
       @ssl ||= SSL.new(self['ssl'])
+    end
+
+    def checks
+      self['checks'] ||= {}
+    end
+
+    def handlers
+      self['handlers'] ||= {}
     end
 
     class SSL < Hashie::Mash
