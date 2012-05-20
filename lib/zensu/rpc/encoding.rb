@@ -21,12 +21,17 @@ module Zensu
         end
       end
 
+      def encrypted_envelope
+        { 'v' => 1, 'cipher' => Zensu.settings.ssl.cipher }
+      end
+
       def encrypt_message(message)
         payload = symmetric_encrypt Zensu.settings.ssl.shared_key, message
-        MultiJson.dump({ 
-          'cipher' => Zensu.settings.ssl.cipher,
-          'payload' => payload
-        })
+        # This v is NOT using semantic versioning since this is a container format
+        # rather than an api.
+        MultiJson.dump encrypted_envelope.tap do |e|
+          e['payload'] = payload
+        end
       end
 
       def decrypt_message(message)

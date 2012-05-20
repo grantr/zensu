@@ -19,7 +19,11 @@ module Zensu
 
     module Envelope
       def envelope
-        { 'jsonrpc' => '2.0' }
+        # v is using semantic versioning
+        # major bump: backwards incompatible
+        # minor bump: backwards compatible with new features
+        # patch bump: backwards compatible bug fixes
+        { 'jsonrpc' => '2.0', 'v' => '1.0.0' }
       end
     end
 
