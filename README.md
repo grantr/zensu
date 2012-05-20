@@ -1,5 +1,6 @@
 # Zensu
 
+[![Build Status](https://secure.travis-ci.org/grantr/zensu.png?branch=master)](http://travis-ci.org/grantr/zensu)
 [![Dependency Status](https://gemnasium.com/grantr/zensu.png)](https://gemnasium.com/grantr/zensu)
 
 Zensu is a work-in-progress on a clone of sensu using zeromq as a transport instead of rabbitmq.
