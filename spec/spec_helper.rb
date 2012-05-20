@@ -1,7 +1,9 @@
 require 'bundler/setup'
 
-require 'simplecov'
-SimpleCov.start
+if ENV['COVERAGE'] == 'true'
+  require 'simplecov'
+  SimpleCov.start
+end
 
 require 'zensu'
 
