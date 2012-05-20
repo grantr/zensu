@@ -20,7 +20,12 @@ module Zensu
       def valid_certificate?(cert)
         #TODO should request object take care of this? - assume we have a cert object here
         cert = cert.is_a?(String) ? OpenSSL::X509::Certificate.new(cert) : cert
-        cert.verify(cacert.public_key)
+        begin
+          cert.verify(cacert.public_key)
+        rescue OpenSSL::X509::CertificateError
+          # jruby raises an error instead of returning false
+          false
+        end
       end
 
       def public_encrypt(cert, string)
