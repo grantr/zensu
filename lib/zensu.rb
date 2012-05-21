@@ -33,10 +33,11 @@ module Zensu
   end
 
   def self.logger
-    @logger ||= Cabin::Channel.get
-    @logger.subscribe(STDOUT)
-    @logger.level = :debug #TODO configurable log level
-    @logger
+    Celluloid.logger
+    # @logger ||= Cabin::Channel.get
+    # @logger.subscribe(STDOUT)
+    # @logger.level = :debug #TODO configurable log level
+    # self.logger = @logger
   end
 
   def self.logger=(logger)

@@ -12,7 +12,7 @@ describe Zensu do
   # end
 
   it 'has a logger by default' do
-    Zensu.logger.should be_a Cabin::Channel
+    Zensu.logger.should respond_to(:debug)
   end
 
   #TODO use metaprograming for this so logger/settings can be nil 

@@ -5,7 +5,7 @@
   },
   
   "server": {
-    "host": "localhost",
+    "host": "127.0.0.1",
     "broadcast_port": 5565,
     "results_port": 5566,
     "reqrep_port": 5567
