@@ -36,6 +36,11 @@ describe Zensu::RPC::Handshake::Keymaster do
 end
 
 describe Zensu::RPC::Handshake::Keyslave do
+
+  after(:each) do
+    subject.terminate
+  end
+
   it 'should generate handshake requests' do
     request = subject.generate_request
     request.method.should == 'handshake'
