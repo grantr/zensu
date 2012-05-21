@@ -31,4 +31,16 @@ describe Zensu::Settings do
     subject.ssl.private_key.should == File.read(config_file('key.pem'))
   end
 
+  it 'returns array of servers if only one was given' do
+    subject = Zensu::Settings.new("server" => {"host" => "localhost"})
+    subject.servers.should be_an(Array)
+    subject.servers.should include({"host" => "localhost"})
+  end
+  
+  it 'returns array of servers if multiples were given' do
+    subject = Zensu::Settings.new("servers" => [{"host" => "localhost"}])
+    subject.servers.should be_an(Array)
+    subject.servers.should include({"host" => "localhost"})
+  end
+
 end

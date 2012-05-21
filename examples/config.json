@@ -8,7 +8,7 @@
     "host": "localhost",
     "broadcast_port": 5565,
     "results_port": 5566,
-    "auth_port": 5567
+    "reqrep_port": 5567
   },
 
   "api": {

@@ -19,9 +19,9 @@ module Zensu
       #TODO validate required sections
       true
     end
-    
-    def ssl
-      @ssl ||= SSL.new(self['ssl'])
+
+    def servers
+      self['servers'] || [self['server']]
     end
 
     def checks
@@ -30,6 +30,10 @@ module Zensu
 
     def handlers
       self['handlers'] ||= {}
+    end
+
+    def ssl
+      @ssl ||= SSL.new(self['ssl'])
     end
 
     class SSL < Hashie::Mash
