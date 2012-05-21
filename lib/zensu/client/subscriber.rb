@@ -14,11 +14,14 @@ module Zensu
           Zensu.settings.servers.each do |server|
             @socket.connect("tcp://#{server.host}:#{server.broadcast_port}")
           end
-          @socket.subscribe("system") #TODO subscribe to real topics
-          #TODO create multiple sockets, one for each topic
         rescue IOError
           @socket.close
           raise
+        end
+
+        @socket.subscribe("system")
+        Zensu.settings.client.subscriptions.each do |subscription|
+          @socket.subscribe(subscription)
         end
 
         run!
@@ -28,7 +31,7 @@ module Zensu
         while true
           topic   = @socket.read
           message = @socket.read
-          handle_message! decode(message)
+          handle_notification! decode(message)
         end
       end
 
@@ -36,7 +39,7 @@ module Zensu
         @socket.close if @socket
       end
 
-      def handle_message(message)
+      def handle_notification(message)
         #TODO dispatch message properly
         Zensu.logger.debug "handled broadcast: #{message}"
       end

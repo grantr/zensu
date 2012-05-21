@@ -15,23 +15,27 @@ module Zensu
           raise
         end
 
-        run!
-      end
-
-      def run
-        #TODO set up broadcast timers
-        publish("system", encode(RPC::Notification.new("ping"))) #DEBUG
-        after(5) { run }
+        Zensu.settings.checks.each do |check, options|
+          add_check(check, options)
+        end
       end
 
       def finalize
         @socket.close if @socket
       end
 
-      def publish(topic, message)
-        #TODO send topic first
-        Zensu.logger.debug "publishing to #{topic}: #{message}"
-        @socket.send_multiple [topic, message]
+      def add_check(check, options)
+        interval = options['interval'] || 60
+        every(interval) do
+          options['subscribers'].each do |subscriber|
+            broadcast! subscriber, RPC::Notification.new('check', { 'check' => check })
+          end
+        end
+      end
+
+      def broadcast(topic, notification)
+        Zensu.logger.debug "publishing to #{topic}: #{notification}"
+        @socket.send_multiple [topic, encode(notification)]
       end
 
     end
