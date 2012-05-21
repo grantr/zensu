@@ -25,7 +25,7 @@ module Zensu
       end
 
       def add_check(check, options)
-        interval = options['interval'] || 60
+        interval = options['interval'] || Zensu.settings.default_check_interval
         every(interval) do
           options['subscribers'].each do |subscriber|
             broadcast! subscriber, RPC::Notification.new('check', { 'check' => check })

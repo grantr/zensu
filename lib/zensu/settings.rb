@@ -67,5 +67,8 @@ module Zensu
       end
     end
 
+    def default_check_interval
+      60
+    end
   end
 end
