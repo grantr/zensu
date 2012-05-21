@@ -26,7 +26,6 @@ module Zensu
         Zensu.logger.debug "sending request: #{request}"
 
         @socket << encode(request)
-        
 
         # TODO configurable timeout
         @timeout = after(5) { terminate } #TODO log termination
