@@ -9,7 +9,7 @@ module Zensu
 
         begin
           Zensu.settings.servers.each do |server|
-            @socket.connect("tcp://#{server.host}:#{server.reqrep_port}")
+            @socket.connect("tcp://#{server.host}:#{server.rpc_port}")
           end
         rescue IOError
           @socket.close
