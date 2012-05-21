@@ -8,7 +8,7 @@ module Zensu
       # plugin actors should inherit from this class.
       # the subscriber actor should be the one creating the plugin classes.
 
-      def initialize
+      def initialize(check, options={})
         @socket = PushSocket.new
 
         begin
@@ -17,20 +17,34 @@ module Zensu
           @socket.close
           raise
         end
+
+        @check = check
+
+        if options['standalone']
+          @interval = options['interval'] || Zensu.settings.default_check_interval
+          run!
+        end
       end
 
       def finalize
         @socket.close if @socket
       end
 
+      def run
+        while true
+          check
+          after(@interval) { check }
+        end
+      end
+
       def check
         push("checking")
       end
 
-      def push(message)
+      def push(result)
         #TODO receive pushes from handlers and push to servers
-        Zensu.logger.debug("pushing: #{message}")
-        @socket << encode(RPC::Notification.new('result', {'output' => message}))
+        Zensu.logger.debug("pushing: #{result}")
+        @socket << encode(RPC::Notification.new(@check, result))
       end
 
     end

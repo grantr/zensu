@@ -45,7 +45,12 @@ module Zensu
 
       def add_pusher(check, options)
         @pushers ||= {}
-        @pushers[check.to_sym] = Pusher.supervise
+
+        if options['command']
+          @pushers[check.to_sym] = CommandPusher.supervise(check, options)
+        else
+          @pushers[check.to_sym] = Pusher.supervise
+        end
       end
 
       def pusher_for(check)

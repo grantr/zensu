@@ -43,11 +43,11 @@
 
   "checks": {
     "system": {
-      "command": "will be overridden by a config snippet",
+      "command": "uptime",
       "subscribers": [
         "a"
         ],
-      "interval": 60
+      "interval": 5
     }
   },
 

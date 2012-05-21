@@ -21,6 +21,7 @@ require 'zensu/server/broadcaster'
 require 'zensu/server/puller'
 
 require 'zensu/client/pusher'
+require 'zensu/client/command_pusher'
 require 'zensu/client/subscriber'
 
 module Zensu
