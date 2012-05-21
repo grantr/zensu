@@ -50,9 +50,12 @@ module Zensu
         @responders[method.to_sym] = options[:with].supervise
       end
 
-
       def responder_for(request)
-        @responders[request.method.to_sym]
+        @responders[request.method.to_sym].actor
+      end
+
+      def responders
+        @responders
       end
 
     end

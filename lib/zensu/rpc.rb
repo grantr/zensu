@@ -9,13 +9,8 @@ module Zensu
 
       def respond(request)
         #TODO validate request, handle errors, etc
-        handle(request)
+        generate_response(request)
       end
-    end
-
-    class Requester
-      include Celluloid
-
     end
 
     module Envelope

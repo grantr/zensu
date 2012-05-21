@@ -13,13 +13,13 @@ require 'zensu/settings'
 require 'zensu/rpc'
 require 'zensu/rpc/ssl'
 require 'zensu/rpc/encoding'
+require 'zensu/rpc/requester'
 require 'zensu/rpc/handshake'
 
 require 'zensu/server/response_router'
 require 'zensu/server/publisher'
 require 'zensu/server/puller'
 
-require 'zensu/client/request_router'
 require 'zensu/client/pusher'
 require 'zensu/client/subscriber'
 

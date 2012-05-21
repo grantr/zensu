@@ -37,7 +37,7 @@ end
 
 describe Zensu::RPC::Handshake::Keyslave do
   it 'should generate handshake requests' do
-    request = subject.request
+    request = subject.generate_request
     request.method.should == 'handshake'
     request.name.should == Zensu.settings.client.name
     request.cert.should == Zensu.settings.ssl.certificate
