@@ -20,7 +20,7 @@ module Zensu
 
       def run
         while true
-          handle_message! decode(@socket.read)
+          handle_message! RPC::Notification.parse(decode(@socket.read))
         end
       end
 

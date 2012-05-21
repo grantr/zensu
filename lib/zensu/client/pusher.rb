@@ -23,10 +23,14 @@ module Zensu
         @socket.close if @socket
       end
 
+      def check
+        push("checking")
+      end
+
       def push(message)
         #TODO receive pushes from handlers and push to servers
         Zensu.logger.debug("pushing: #{message}")
-        @socket << encode(RPC::Notification.new(message))
+        @socket << encode(RPC::Notification.new('result', {'output' => message}))
       end
 
     end
