@@ -57,5 +57,15 @@ module Zensu
 
     end
 
+    def client
+      @client ||= Client.new(self['client'])
+    end
+
+    class Client < Hashie::Mash
+      def name
+        self['name'] ||= "unknown"
+      end
+    end
+
   end
 end
