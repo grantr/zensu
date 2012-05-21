@@ -3,6 +3,11 @@ module Zensu
     class Pusher
       include Celluloid::ZMQ
 
+      include RPC::Encoding
+
+      # plugin actors should inherit from this class.
+      # the subscriber actor should be the one creating the plugin classes.
+
       def initialize
         @socket = PushSocket.new
 
@@ -20,7 +25,8 @@ module Zensu
 
       def push(message)
         #TODO receive pushes from handlers and push to servers
-        @socket << message
+        Zensu.logger.debug("pushing: #{message}")
+        @socket << encode(RPC::Notification.new(message))
       end
 
     end

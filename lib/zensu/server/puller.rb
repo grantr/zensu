@@ -3,6 +3,8 @@ module Zensu
     class Puller
       include Celluloid::ZMQ
 
+      include RPC::Encoding
+
       def initialize
         @socket = PullSocket.new
 
@@ -17,7 +19,9 @@ module Zensu
       end
 
       def run
-        while true; handle_message! @socket.read; end
+        while true
+          handle_message! decode(@socket.read)
+        end
       end
 
       def finalize
@@ -26,7 +30,7 @@ module Zensu
 
       def handle_message(message)
         #TODO dispatch message properly
-        puts "handled push: #{message}"
+        Zensu.logger.debug "handled push: #{message}"
       end
     end
   end
