@@ -26,7 +26,7 @@ module Zensu
           request = @socket.read
           Zensu.logger.debug "received request: #{request}"
           #TODO validate request
-          dispatch RPC::Request.parse(decode(request))
+          dispatch! RPC::Request.parse(decode(request))
         end
       end
 
