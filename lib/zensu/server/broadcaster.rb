@@ -1,6 +1,6 @@
 module Zensu
   module Server
-    class Publisher
+    class Broadcaster
       include Celluloid::ZMQ
 
       include RPC::Encoding

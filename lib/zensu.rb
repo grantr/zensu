@@ -17,7 +17,7 @@ require 'zensu/rpc/requester'
 require 'zensu/rpc/handshake'
 
 require 'zensu/server/response_router'
-require 'zensu/server/publisher'
+require 'zensu/server/broadcaster'
 require 'zensu/server/puller'
 
 require 'zensu/client/pusher'
