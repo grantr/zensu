@@ -18,7 +18,7 @@ module Zensu
 
       def run
         #TODO set up broadcast timers
-        publish("hi!") #DEBUG
+        publish("system", "hi!") #DEBUG
         after(5) { run }
       end
 
@@ -26,10 +26,10 @@ module Zensu
         @socket.close if @socket
       end
 
-      def publish(message)
+      def publish(topic, message)
         #TODO send topic first
-        puts "publishing: #{message}"
-        @socket << message
+        puts "publishing to #{topic}: #{message}"
+        @socket.send_multiple [topic, message]
       end
 
     end

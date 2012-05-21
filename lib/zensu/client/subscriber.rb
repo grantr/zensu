@@ -7,8 +7,10 @@ module Zensu
         @socket = Celluloid::ZMQ::SubSocket.new
 
         begin
-          @socket.connect("tcp://127.0.0.1:5565") # TODO config all server addresses and ports, connect to each one
-          @socket.subscribe("") #TODO subscribe to real topics
+          Zensu.settings.servers.each do |server|
+            @socket.connect("tcp://#{server.host}:#{server.broadcast_port}")
+          end
+          @socket.subscribe("system") #TODO subscribe to real topics
           #TODO create multiple sockets, one for each topic
         rescue IOError
           @socket.close
@@ -19,7 +21,11 @@ module Zensu
       end
 
       def run
-        while true; handle_message! @socket.read; end
+        while true
+          topic   = @socket.read
+          message = @socket.read
+          handle_message! message
+        end
       end
 
       def finalize
