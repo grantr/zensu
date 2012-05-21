@@ -3,24 +3,11 @@ module Zensu
     class RequestRouter
       include Celluloid::ZMQ
 
+      #TODO this class isn't strictly necessary and may be too many layers of abstraction.
+      # Each requester could manage its own req socket.
+
       include RPC::Encoding
       
-      def self.request(method, options)
-        @requester_classes ||= {}
-        @requester_classes[method.to_sym] = options[:with]
-
-        define_method(method.to_sym) do |*args|
-          process_request @requesters[method.to_sym], *args
-        end
-      end
-
-      def self.requester_classes
-        @requester_classes
-      end
-
-      # requesters
-      request :handshake, with: RPC::Handshake::Keyslave
-
       def initialize
         @socket = Celluloid::ZMQ::ReqSocket.new
 
@@ -31,18 +18,12 @@ module Zensu
           raise
         end
 
-        start_requesters
+        # requesters
+        request :handshake, with: RPC::Handshake::Keyslave
       end
 
       def finalize
         @socket.close if @socket
-      end
-
-      def start_requesters
-        @requesters = {}
-        self.class.requester_classes.each do |method, requester_class|
-          @requesters[method] = requester_class.supervise
-        end
       end
 
       def process_request(requester, *args)
@@ -59,6 +40,16 @@ module Zensu
         Zensu.logger.debug "got reply: #{response}"
         requester.handle_response response
       end
+
+      def request(method, options)
+        @requesters ||= {}
+        @requesters[method.to_sym] = options[:with].supervise
+
+        singleton_class.send(:define_method, method.to_sym) do |*args|
+          process_request @requesters[method.to_sym], *args
+        end
+      end
+
 
     end
   end

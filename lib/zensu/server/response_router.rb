@@ -5,18 +5,6 @@ module Zensu
 
       include RPC::Encoding      
       
-      def self.respond_to(method, options)
-        @responder_classes ||= {}
-        @responder_classes[method.to_sym] = options[:with]
-      end
-
-      def self.responder_classes
-        @responder_classes
-      end
-
-      # responders
-      respond_to :handshake, with: RPC::Handshake::Keymaster
-
       def initialize
         @socket = Celluloid::ZMQ::RepSocket.new
 
@@ -27,16 +15,10 @@ module Zensu
           raise
         end
 
-        start_responders
+        # responders
+        respond_to :handshake, with: RPC::Handshake::Keymaster
 
         run!
-      end
-
-      def start_responders
-        @responders = {}
-        self.class.responder_classes.each do |method, responder_class|
-          @responders[method] = responder_class.supervise
-        end
       end
 
       def run
@@ -62,6 +44,12 @@ module Zensu
         Zensu.logger.debug "sending response: #{response}"
         @socket << encode(response)
       end
+
+      def respond_to(method, options)
+        @responders ||= {}
+        @responders[method.to_sym] = options[:with].supervise
+      end
+
 
       def responder_for(request)
         @responders[request.method.to_sym]
