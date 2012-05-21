@@ -1,5 +1,6 @@
 require 'redis'
 require 'redis-namespace'
+require 'fakeredis' #TODO only require if no redis is configured
 
 module Zensu
   module Server

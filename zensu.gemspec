@@ -22,6 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "multi_json", [ ">= 1.3.0" ]
   gem.add_runtime_dependency "redis"
   gem.add_runtime_dependency "redis-namespace"
+  gem.add_runtime_dependency "fakeredis"
   gem.add_runtime_dependency "thor"
   gem.add_runtime_dependency "hashie"
   gem.add_runtime_dependency "cabin"
