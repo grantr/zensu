@@ -51,7 +51,7 @@ module Zensu
       end
 
       def responder_for(request)
-        @responders[request.method.to_sym].actor
+        @responders[request.method.to_sym].actor if @responders[request.method.to_sym]
       end
 
       def responders
