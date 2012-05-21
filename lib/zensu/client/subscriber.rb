@@ -3,6 +3,10 @@ module Zensu
     class Subscriber
       include Celluloid::ZMQ
 
+      include RPC::Encoding
+
+      #TODO supervise plugin actors
+
       def initialize
         @socket = Celluloid::ZMQ::SubSocket.new
 
@@ -24,7 +28,7 @@ module Zensu
         while true
           topic   = @socket.read
           message = @socket.read
-          handle_message! message
+          handle_message! decode(message)
         end
       end
 
@@ -34,7 +38,7 @@ module Zensu
 
       def handle_message(message)
         #TODO dispatch message properly
-        puts "handled broadcast: #{message}"
+        Zensu.logger.debug "handled broadcast: #{message}"
       end
     end
   end

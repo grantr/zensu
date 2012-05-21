@@ -3,6 +3,8 @@ module Zensu
     class Publisher
       include Celluloid::ZMQ
 
+      include RPC::Encoding
+
       def initialize
         @socket = Celluloid::ZMQ::PubSocket.new
 
@@ -18,7 +20,7 @@ module Zensu
 
       def run
         #TODO set up broadcast timers
-        publish("system", "hi!") #DEBUG
+        publish("system", encode(RPC::Notification.new("ping"))) #DEBUG
         after(5) { run }
       end
 
@@ -28,7 +30,7 @@ module Zensu
 
       def publish(topic, message)
         #TODO send topic first
-        puts "publishing to #{topic}: #{message}"
+        Zensu.logger.debug "publishing to #{topic}: #{message}"
         @socket.send_multiple [topic, message]
       end
 
