@@ -28,12 +28,25 @@ module Zensu
         @socket << encode(request)
 
         # TODO configurable timeout
-        @timeout = after(5) { terminate } #TODO log termination
-        response = RPC::Response.parse(decode(@socket.read))
-        @timeout.cancel
+        @timeout_timer = after(5) { terminate } #TODO log termination
+        response = get_response
+        @timeout_timer.cancel
 
         Zensu.logger.debug "got reply: #{response}"
         handle_response response
+      end
+
+      def get_response
+        RPC::Response.parse decode(@socket.read)
+      end
+
+
+      def generate_request
+        # override in subclasses
+      end
+
+      def handle_response(response)
+        # override in subclasses
       end
     end
   end
