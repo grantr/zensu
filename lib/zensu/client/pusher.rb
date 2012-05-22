@@ -41,6 +41,16 @@ module Zensu
         push("checking")
       end
 
+      #TODO result format:
+      #  client:
+      #    name:
+      #  check:
+      #    name:
+      #    status:
+      #    duration:
+      #    output:
+      #    handle: boolean
+      #
       def push(result)
         #TODO receive pushes from handlers and push to servers
         Zensu.logger.debug("pushing: #{result}")
