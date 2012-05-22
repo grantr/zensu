@@ -1,6 +1,6 @@
 module Zensu
   module Client
-    class CommandPusher < Pusher
+    class CommandPusher < CheckResultPusher
 
       def initialize(check, options={})
         super

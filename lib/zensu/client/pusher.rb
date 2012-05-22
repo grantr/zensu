@@ -5,10 +5,8 @@ module Zensu
 
       include RPC::Encoding
 
-      # plugin actors should inherit from this class.
-      # the subscriber actor should be the one creating the plugin classes.
 
-      def initialize(check, options={})
+      def initialize
         @socket = PushSocket.new
 
         begin
@@ -17,6 +15,25 @@ module Zensu
           @socket.close
           raise
         end
+      end
+
+      def finalize
+        @socket.close if @socket
+      end
+
+      def push(method, result)
+        #TODO receive pushes from handlers and push to servers
+        Zensu.logger.debug("pushing: #{method} #{result}")
+        @socket << encode(RPC::Notification.new(method, result))
+      end
+    end
+
+    # TODO plugin actors should inherit from this class.
+    # the subscriber actor should be the one creating the plugin classes.
+    class CheckResultPusher < Pusher
+
+      def initialize(check, options={})
+        super
 
         @check = check
 
@@ -26,19 +43,11 @@ module Zensu
         end
       end
 
-      def finalize
-        @socket.close if @socket
-      end
-
       def run
         while true
           check
           after(@interval) { check }
         end
-      end
-
-      def check
-        push("checking")
       end
 
       #TODO result format:
@@ -51,10 +60,8 @@ module Zensu
       #    output:
       #    handle: boolean
       #
-      def push(result)
-        #TODO receive pushes from handlers and push to servers
-        Zensu.logger.debug("pushing: #{result}")
-        @socket << encode(RPC::Notification.new(@check, result))
+      def check
+        push("check", "checking")
       end
 
     end
