@@ -34,14 +34,17 @@ module Zensu
   end
 
   def self.logger
-    Celluloid.logger
-    # @logger ||= Cabin::Channel.get
-    # @logger.subscribe(STDOUT)
-    # @logger.level = :debug #TODO configurable log level
-    # self.logger = @logger
+    unless @logger
+      log = Cabin::Channel.get
+      log.subscribe(STDOUT)
+      log.level = :debug #TODO configurable log level
+      self.logger = log
+    end
+    @logger
   end
 
-  def self.logger=(logger)
-    @logger = logger
+  # if logger = nil, make it a channel with no subscriptions
+  def self.logger=(log)
+    @logger = Celluloid.logger = (log ? log : Cabin::Channel.get) 
   end
 end
