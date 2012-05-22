@@ -55,6 +55,8 @@ module Zensu
       # hgetall
       # srem
       # del
+
+      # TODO try to identify higher level operations that are composed of the above
     end
   end
 end
