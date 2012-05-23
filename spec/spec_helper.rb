@@ -1,6 +1,6 @@
 require 'bundler/setup'
 
-if ENV['COVERAGE'] == 'true' && (RUBY_ENGINE == "ruby")
+if ENV['COVERAGE'] == 'true' && RUBY_ENGINE == "ruby"
   require 'simplecov'
   SimpleCov.start do
     add_filter '/spec/'
