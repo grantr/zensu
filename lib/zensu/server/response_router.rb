@@ -26,7 +26,7 @@ module Zensu
       end
 
       def run
-        while true
+        loop do
           request = @socket.read
           Zensu.logger.debug "received request: #{request}"
           #TODO validate request

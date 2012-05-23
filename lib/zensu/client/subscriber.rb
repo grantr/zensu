@@ -33,7 +33,7 @@ module Zensu
       end
 
       def run
-        while true
+        loop do
           topic   = @socket.read
           message = @socket.read
           dispatch! RPC::Notification.parse(decode(message))
