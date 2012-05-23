@@ -1,6 +1,7 @@
 require "zensu/version"
 
 require 'celluloid'
+require 'ffi' # try to keep travis from missing ffi require
 require 'celluloid/zmq'
 require 'zensu/celluloid_ext'
 
