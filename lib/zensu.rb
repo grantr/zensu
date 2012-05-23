@@ -13,6 +13,7 @@ require 'zensu/settings'
 require 'zensu/rpc'
 require 'zensu/rpc/ssl'
 require 'zensu/rpc/encoding'
+require 'zensu/rpc/dispatch'
 require 'zensu/rpc/requester'
 require 'zensu/rpc/handshake'
 

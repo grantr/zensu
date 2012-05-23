@@ -15,12 +15,15 @@ module Zensu
           raise
         end
 
+        handle :keepalive, with: KeepaliveHandler
+
         run!
       end
 
       def run
         while true
-          handle_message! RPC::Notification.parse(decode(@socket.read))
+          message = @socket.read
+          dispatch! RPC::Notification.parse(decode(message))
         end
       end
 
@@ -28,9 +31,15 @@ module Zensu
         @socket.close if @socket
       end
 
-      def handle_message(message)
-        #TODO dispatch message properly
+      def dispatch(message)
         Zensu.logger.debug "handled push: #{message}"
+
+        handler = handler_for(message.method)
+        if handler
+          handler.handle(message)
+        else
+          Zensu.logger.warn "unknown push method: #{message.method}"
+        end
       end
     end
   end

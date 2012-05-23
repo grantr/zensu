@@ -4,6 +4,7 @@ module Zensu
       include Celluloid::ZMQ
 
       include RPC::Encoding
+      include RPC::Dispatch
 
       #TODO supervise plugin actors (pushers)
 
@@ -35,7 +36,7 @@ module Zensu
         while true
           topic   = @socket.read
           message = @socket.read
-          handle_notification! RPC::Notification.parse(decode(message))
+          dispatch! RPC::Notification.parse(decode(message))
         end
       end
 
@@ -47,23 +48,18 @@ module Zensu
         @pushers ||= {}
 
         if options['command']
-          @pushers[check.to_sym] = CommandPusher.supervise(check, options)
+          handle check, with: CommandPusher.supervise(check, options)
         else
-          @pushers[check.to_sym] = Pusher.supervise
+          handle check, with: Pusher
         end
       end
 
-      def pusher_for(check)
-        @pushers[check.to_sym].actor if @pushers[check.to_sym]
-      end
-
-      def handle_notification(message)
-        #TODO dispatch message properly
+      def dispatch(message)
         Zensu.logger.debug "handled broadcast: #{message}"
        
         case message.method
         when 'check'
-          pusher = pusher_for(message.check)
+          pusher = handler_for(message.check)
           if pusher
             pusher.check
           else

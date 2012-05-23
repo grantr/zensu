@@ -3,8 +3,9 @@ module Zensu
     class ResponseRouter
       include Celluloid::ZMQ
 
-      include RPC::Encoding      
-      
+      include RPC::Encoding
+      include RPC::Dispatch
+
       def initialize
         @socket = Celluloid::ZMQ::RepSocket.new
 
@@ -16,7 +17,7 @@ module Zensu
         end
 
         # responders
-        respond_to :handshake, with: RPC::Handshake::Keymaster
+        handle :handshake, with: RPC::Handshake::Keymaster
 
         run!
       end
@@ -35,27 +36,14 @@ module Zensu
       end
 
       def dispatch(request)
-        responder = responder_for(request)
-        if responder
-          response = responder.respond(request)
+        handler = handler_for(request.method)
+        if handler
+          response = handler.respond(request)
         else
           response = RPC::Response.new(nil, "Unknown method", request.id)
         end
         Zensu.logger.debug "sending response: #{response}"
         @socket << encode(response)
-      end
-
-      def respond_to(method, options)
-        @responders ||= {}
-        @responders[method.to_sym] = options[:with].supervise
-      end
-
-      def responder_for(request)
-        @responders[request.method.to_sym].actor if @responders[request.method.to_sym]
-      end
-
-      def responders
-        @responders
       end
 
     end
