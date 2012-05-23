@@ -34,4 +34,3 @@ describe Zensu::Server::Keymaster do
   end
 
 end
-
