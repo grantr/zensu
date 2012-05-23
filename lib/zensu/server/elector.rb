@@ -54,20 +54,30 @@ module Zensu
 
       def promote
         @is_leader = true
-        @broadcaster = Broadcaster.supervise
+        start_leader_duties
         Zensu.logger.info("I am now the leader")
       end
 
       def demote
         if is_leader?
           @is_leader = false
-          @broadcaster.terminate if @broadcaster.alive?
+          stop_leader_duties
+          # could this delete be dangerous in a net split scenario?
           persister.del(leader_lock_key) if persister.alive? #TODO this doesn't work because actors are not terminated in the proper order
           Zensu.logger.info("I am no longer the leader")
         else
           Zensu.logger.warn("Not currently the leader")
         end
       end
+
+      def start_leader_duties
+        @broadcaster = Broadcaster.supervise
+      end
+
+      def stop_leader_duties
+        @broadcaster.terminate if @broadcaster.alive?
+      end
+
 
       def leader_lock_key
         "lock:leader"
