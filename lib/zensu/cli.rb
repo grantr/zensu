@@ -3,6 +3,19 @@ require 'securerandom'
 
 module Zensu
   class CLI < Thor
+
+    desc "server", "Run the zensu server"
+    def server
+      require 'zensu'
+      Zensu::Server.run
+    end
+
+    desc "client", "Run the zensu client"
+    def client
+      require 'zensu'
+      Zensu::Client.run
+    end
+
     desc "root_ca", "Generate a Root CA"
     method_option :name, type: :string, desc: "Common name"
     method_option :key_file,  type: :string, desc: "Key output file",  default: "cakey.pem"
