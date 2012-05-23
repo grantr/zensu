@@ -7,11 +7,11 @@ module Zensu
       #TODO there should be an actor that manages authentication. all rpc actors are supervised by this class and restarted when it detects that handshake needs to happen again
 
       # TODO this causes specs to hang
-      # def initialize
-      #   super
+      def initialize(options={})
+        super()
 
-      #   request!
-      # end
+        request! if options[:handshake]
+      end
 
       def generate_request
         RPC::Request.new("handshake", {'name' => Zensu.settings.client.name, 'cert' => Zensu.settings.ssl.certificate})
