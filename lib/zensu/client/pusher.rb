@@ -10,7 +10,9 @@ module Zensu
         @socket = PushSocket.new
 
         begin
-          @socket.connect("tcp://127.0.0.1:5566") # TODO config all server addresses and ports, connect to each one
+          Zensu.settings.servers.each do |server|
+            @socket.connect("tcp://#{server.host}:#{server.results_port}")
+          end
         rescue IOError
           @socket.close
           raise

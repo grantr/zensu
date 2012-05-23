@@ -21,7 +21,7 @@ module Zensu
     end
 
     def servers
-      self['servers'] || [self['server']]
+      @servers ||= (self['servers'] ? self['servers'].collect { |s| Server.new(s) } : [server])
     end
 
     def checks
@@ -65,6 +65,29 @@ module Zensu
       def name
         self['name'] ||= "unknown"
       end
+    end
+
+    def server
+      @server ||= Server.new(self['server'])
+    end
+
+    class Server < Hashie::Mash
+      def host
+        self['host'] ||= '127.0.0.1'
+      end
+
+      def broadcast_port
+        self['broadcast_port'] ||= "5565"
+      end
+
+      def results_port
+        self['results_port'] ||= "5566"
+      end
+
+      def rpc_port
+        self['rpc_port'] ||= "5567"
+      end
+
     end
 
     def default_check_interval
