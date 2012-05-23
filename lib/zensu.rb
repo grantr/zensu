@@ -25,11 +25,13 @@ require 'zensu/server/persister'
 require 'zensu/server/failure_detector'
 require 'zensu/server/keepalive_handler'
 require 'zensu/server/check_result_handler'
+require 'zensu/server'
 
 require 'zensu/client/pusher'
 require 'zensu/client/command_pusher'
 require 'zensu/client/keepalive_pusher'
 require 'zensu/client/subscriber'
+require 'zensu/client'
 
 module Zensu
   class << self
