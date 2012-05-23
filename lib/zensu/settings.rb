@@ -16,6 +16,7 @@ module Zensu
     # if redis is not configured, use a fakeredis persister. (with an appropriate warning against using this in production)
     #
     # TODO this might be a good place to add internal pubsub based on watching config values
+    # But probably a more correct approach is to add an inproc zmq pubsub channel with modules for publishing and subscribing
 
     def valid?
       #TODO validate required sections
