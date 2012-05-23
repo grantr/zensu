@@ -21,6 +21,7 @@ require 'zensu/server/response_router'
 require 'zensu/server/broadcaster'
 require 'zensu/server/puller'
 require 'zensu/server/persister'
+require 'zensu/server/failure_detector'
 
 require 'zensu/client/pusher'
 require 'zensu/client/command_pusher'

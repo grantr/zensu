@@ -20,6 +20,7 @@ module Zensu
         srem
 
         rpush
+        lpush
         lrange
         lpop
         ltrim
@@ -67,6 +68,10 @@ module Zensu
           @backend.send(method, namespace_key(key), *args)
         end
       end
+
+      # def pipelined(&block)
+      #   @backend.pipelined(&block)
+      # end
     end
   end
 end
