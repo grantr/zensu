@@ -46,10 +46,8 @@ module Zensu
       end
 
       def run
-        while true
-          check
-          after(@interval) { check }
-        end
+        check
+        after(@interval) { run }
       end
 
       #TODO result format:
