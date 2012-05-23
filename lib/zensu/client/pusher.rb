@@ -35,7 +35,7 @@ module Zensu
     class CheckResultPusher < Pusher
 
       def initialize(check, options={})
-        super
+        super()
 
         @check = check
 
