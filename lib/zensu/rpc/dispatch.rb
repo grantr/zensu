@@ -5,7 +5,7 @@ module Zensu
       # :with can be either an actor or an actor class
       def handle(*methods, options)
         handler = options.delete(:with)
-        handler = handler.is_a?(Celluloid::Actor) ? handler : handler.supervise
+        handler = handler.is_a?(Celluloid) ? handler : handler.supervise
         methods.each do |method|
           handlers[method.to_sym] = handler
         end
