@@ -2,12 +2,12 @@ module Zensu
   module RPC
     module Dispatch
 
-      def handle(method, options)
+      # :with can be either an actor or an actor class
+      def handle(*methods, options)
         handler = options.delete(:with)
-        if handler.is_a?(Celluloid::Actor)
+        handler = handler.is_a?(Celluloid::Actor) ? handler : handler.supervise
+        methods.each do |method|
           handlers[method.to_sym] = handler
-        else
-          handlers[method.to_sym] = handler.supervise
         end
       end
 
