@@ -21,6 +21,7 @@ module Zensu
           #TODO raise if cannot decrypt
           MultiJson.load decrypt_message(message)
         else
+          #TODO raise if message is supposed to be encrypted
           MultiJson.load message
         end
       end
