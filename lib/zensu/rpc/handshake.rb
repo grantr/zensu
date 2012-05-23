@@ -32,12 +32,13 @@ module Zensu
 
         #TODO make this a state machine that transitions when key becomes valid/invalid
         #TODO there should be an actor that manages authentication. all rpc actors are supervised by this class and restarted when it detects that handshake needs to happen again
-        
-        def initialize
-          super
+ 
+        # TODO this causes specs to hang
+        # def initialize
+        #   super
 
-          request!
-        end
+        #   request!
+        # end
 
         def generate_request
           Request.new("handshake", {'name' => Zensu.settings.client.name, 'cert' => Zensu.settings.ssl.certificate})
