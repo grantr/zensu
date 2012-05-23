@@ -2,6 +2,13 @@ require 'redis'
 
 module Zensu
   module Server
+    module Persistence
+      def persister
+        @persister_supervisor ||= Persister.supervise
+        @persister_supervisor.actor
+      end
+    end
+
     class Persister
       include Celluloid
 

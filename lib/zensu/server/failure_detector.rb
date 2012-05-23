@@ -10,6 +10,7 @@ module Zensu
     # leader also maintains failure detector state in redis so when leader changes the new leader can load existing fd data.
     # pushing fd state to redis is done async so redis can go down without killing detectors.
     class FailureDetector
+      include Persistence
 
       INTERVALS_SIZE = 1000
 
@@ -18,11 +19,6 @@ module Zensu
       def initialize(name, options = {})
         @name = name
         @phi_threshold = options[:phi_threshold] || 8
-        @persister_supervisor = Persister.supervise
-      end
-
-      def persister
-        @persister_supervisor.actor
       end
 
       def add(arrival_time = Time.now.to_i)
