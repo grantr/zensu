@@ -31,17 +31,19 @@ describe Zensu::RPC::Requester do
   end
 
   #TODO how to test this?
-  it 'should time out'
-    # requester = requester_class.new(timeout: 1)
-    # -> { requester.request; requester.sleep 1 }.should raise_error(Celluloid::Task::TerminatedError)
+  # it 'should time out' do
+  #   requester = requester_class.new(timeout: 1)
+  #   -> { requester.request; requester.sleep 1 }.should raise_error(Celluloid::Task::TerminatedError)
+  # end
 
-  #TODO hangs
-  it 'should return the response'
-    # rr = Zensu::Server::ResponseRouter.new
-    # rr.respond_to :test, with: responder_class
-    # requester = requester_class.new
-    # response = requester.request
-    # response.should == 'success'
-    # requester.terminate
+
+  it 'should return the response' do
+    rr = Zensu::Server::ResponseRouter.new
+    rr.handle :test, with: responder_class
+    requester = requester_class.new
+    response = requester.request
+    response.should == 'success'
+    requester.terminate
+  end
 
 end
