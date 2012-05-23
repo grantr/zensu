@@ -1,11 +1,11 @@
 module Zensu
   module Server
-    module KeepaliveHandler
+    class KeepaliveHandler
       include Celluloid
 
       def initialize
 
-        every(30) { check }
+        #every(30) { check }
       end
 
       def failure_detectors
@@ -17,6 +17,8 @@ module Zensu
       end
 
       def handle(message)
+        Zensu.logger.debug("handling keepalive: #{message}")
+        return
         client = message.client['name']
 
         failure_detector_for(client).add
