@@ -20,6 +20,7 @@ require 'zensu/rpc/handshake'
 require 'zensu/server/response_router'
 require 'zensu/server/broadcaster'
 require 'zensu/server/puller'
+require 'zensu/server/persister'
 
 require 'zensu/client/pusher'
 require 'zensu/client/command_pusher'

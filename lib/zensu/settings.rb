@@ -92,6 +92,28 @@ module Zensu
 
     end
 
+    def environment
+      self['environment'] ||= 'development'
+    end
+
+    def persistence_backend
+      self['persistence_backend'] ||= 'redis'
+    end
+
+    def redis
+      @redis ||= Redis.new(self['redis'])
+    end
+
+    class Redis < Hashie::Mash
+      def host
+        self['host'] ||= '127.0.0.1'
+      end
+
+      def port
+        self['port'] ||= '6379'
+      end
+    end
+
     def default_check_interval
       60
     end
