@@ -11,7 +11,7 @@ module Zensu
     # add appends to intervals list and updates last_time
     #
     # actually since this is 
-    class RedisBackedFailureDetector
+    class FailureDetector
 
       attr_reader :last_time, :intervals
       attr_reader :phi_threshold
