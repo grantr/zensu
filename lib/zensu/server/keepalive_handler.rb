@@ -5,7 +5,7 @@ module Zensu
 
       def initialize
 
-        #every(30) { check }
+        every(30) { check }
       end
 
       def failure_detectors
@@ -25,6 +25,7 @@ module Zensu
       end
 
       def check
+        Zensu.logger.debug("checking detectors")
         failure_detectors.each do |client, detector|
           mark_dead(client) if detector.suspicious?
         end
