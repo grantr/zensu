@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Zensu::Client::Keyslave do
+  before(:each) do
+    # for ssl certs
+    Zensu.settings = Zensu::Settings.load(config_file('config.json'))
+  end
 
   after(:each) do
     subject.terminate
