@@ -62,8 +62,8 @@ module Zensu
       #    output:
       #    handle: boolean
       #
-      def check
-        push("check", "checking")
+      def push(result)
+        super("result", result)
       end
 
     end

@@ -23,6 +23,7 @@ require 'zensu/server/broadcaster'
 require 'zensu/server/puller'
 require 'zensu/server/persister'
 require 'zensu/server/failure_detector'
+require 'zensu/server/check_result_handler'
 
 require 'zensu/client/pusher'
 require 'zensu/client/command_pusher'

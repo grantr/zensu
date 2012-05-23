@@ -4,6 +4,7 @@ module Zensu
       include Celluloid::ZMQ
 
       include RPC::Encoding
+      include RPC::Dispatch
 
       def initialize
         @socket = PullSocket.new
@@ -16,12 +17,13 @@ module Zensu
         end
 
         handle :keepalive, with: KeepaliveHandler
+        handle :result, with: CheckResultHandler
 
         run!
       end
 
       def run
-        while true
+        loop do
           message = @socket.read
           dispatch! RPC::Notification.parse(decode(message))
         end
