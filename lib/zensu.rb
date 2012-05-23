@@ -54,5 +54,21 @@ module Zensu
       @logger = Celluloid.logger = (log ? log : Cabin::Channel.get) 
     end
 
-   end
+    def setup
+      load_settings
+    end
+
+    def load_settings
+      config_paths = [
+        "/etc/zensu",
+        "/etc/sensu",
+        File.join(File.dirname(__FILE__), '..', 'examples')
+      ]
+      path = config_paths.detect { |p| File.exist?(File.join(p, "config.json")) }
+      
+      self.settings = Zensu::Settings.load(File.join(path, "config.json"))
+
+      #TODO conf.d
+    end
+  end
 end
