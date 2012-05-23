@@ -14,6 +14,8 @@ module Zensu
     # TODO if there is no config, use default values.
     # it should work to install the gem and run the server and client without any other setup.
     # if redis is not configured, use a fakeredis persister. (with an appropriate warning against using this in production)
+    #
+    # TODO this might be a good place to add internal pubsub based on watching config values
 
     def valid?
       #TODO validate required sections
