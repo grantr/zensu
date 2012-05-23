@@ -42,7 +42,7 @@
   },
 
   "checks": {
-    "system": {
+    "uptime": {
       "command": "uptime",
       "subscribers": [
         "a"
