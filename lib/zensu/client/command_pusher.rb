@@ -1,3 +1,5 @@
+require 'benchmark'
+
 module Zensu
   module Client
     class CommandPusher < CheckResultPusher
@@ -9,10 +11,13 @@ module Zensu
 
       def check
         result = {}
-        ::IO.popen(@command + ' 2>&1') do |io|
-          result['output'] = io.read
+        duration = Benchmark.realtime do
+          ::IO.popen(@command + ' 2>&1') do |io|
+            result['output'] = io.read
+          end
         end
         result['status'] = $?.exitstatus
+        result['duration'] = "%.3f" % duration.to_f
 
         push result
       end
