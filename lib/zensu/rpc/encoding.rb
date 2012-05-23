@@ -10,13 +10,16 @@ module Zensu
       def encode(message)
         message = message.respond_to?(:as_json) ? message.as_json : message
         if encrypt_message?(message)
-          encrypt_message MultiJson.dump(message)
+          data = encrypt_message MultiJson.dump(message)
         else
-          MultiJson.dump message
+          data = MultiJson.dump message
         end
+        Zensu.logger.debug "sending: #{data}"
+        data
       end
 
       def decode(message)
+        Zensu.logger.debug "received: #{message}"
         if encrypted?(message)
           #TODO raise if cannot decrypt
           MultiJson.load decrypt_message(message)
