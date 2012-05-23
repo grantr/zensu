@@ -3,46 +3,49 @@ module Zensu
 
     # Inspired by cassandra's phi accrual failure detector
     #
-    # TODO store/retrieve info in redis
-    # maybe implement load/store
-    # load grabs last_time and intervals from redis
-    # store puts them there
-    #
-    # add appends to intervals list and updates last_time
-    #
-    # actually since this is 
+    # TODO pipeline requests?
     class FailureDetector
 
-      attr_reader :last_time, :intervals
       attr_reader :phi_threshold
 
-      def initialize(options = {})
-        @last_time = nil
-        @intervals = []
+      def initialize(name, options = {})
+        @name = name
         @phi_threshold = options[:phi_threshold] || 8
+        @persister = Persister.supervise
       end
 
       def add(arrival_time = Time.now.to_i)
-        last_time, @last_time = @last_time, arrival_time # TODO redis getset
+        last_time = @persister.getset(last_time_key, arrival_time)
         i = last_time.nil? ? 0.75 : arrival_time - last_time
-        @intervals << i #TODO redis lpush
-        @intervals.shift if @intervals.size > 1000 #TODO redis ltrim
+        @persister.lpush(intervals_key, i)
+        @persister.ltrim(intervals_key, 1000)
       end
 
       def phi(current_time = Time.now.to_i)
-        return 0 unless @last_time #TODO redis get
-        current_interval = current_time - @last_time
+        last_time = @persister.get(last_time_key)
+        return 0 unless last_time
+        current_interval = current_time - last_time
         exp = -1 * current_interval / interval_mean
         -1 * (Math.log(Math::E ** exp) / Math.log(10))
       end
 
       def interval_mean
-        @intervals.inject(:+) / @intervals.size.to_f #TODO redis lrange, llen
+        intervals = @persister.lrange(intervals_key, 1000)
+        intervals.inject(:+) / intervals.size.to_f
       end
 
       def suspicious?
         phi > @phi_threshold
       end
+
+      def last_time_key
+        "fd_last_time:#{@name}"
+      end
+
+      def intervals_key
+        "fd_intervals:#{@name}"
+      end
+      
     end
   end
 end

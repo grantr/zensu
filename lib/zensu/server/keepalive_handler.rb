@@ -13,7 +13,7 @@ module Zensu
       end
 
       def failure_detector_for(client)
-        @failure_detectors[client] ||= FailureDetector.new
+        @failure_detectors[client] ||= FailureDetector.new(client)
       end
 
       def handle(message)
