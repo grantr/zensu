@@ -13,7 +13,7 @@ module Zensu
       #TODO include timestamp and client configuration
       def keepalive
         Zensu.logger.debug("pushing keepalive")
-        params = Zensu.settings.client.merge({
+        params = Zensu.settings.client.to_hash.merge({
           'timestamp' => Time.now.utc.iso8601
         })
         push "keepalive", params
