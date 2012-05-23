@@ -9,7 +9,7 @@ module Zensu
 
       def encode(message)
         message = message.respond_to?(:as_json) ? message.as_json : message
-        if authenticated?
+        if encrypt_message?(message)
           encrypt_message MultiJson.dump(message)
         else
           MultiJson.dump message
@@ -18,6 +18,7 @@ module Zensu
 
       def decode(message)
         if encrypted?(message)
+          #TODO raise if cannot decrypt
           MultiJson.load decrypt_message(message)
         else
           MultiJson.load message
@@ -45,8 +46,10 @@ module Zensu
         MultiJson.load(message).has_key?('cipher')
       end
 
-      def authenticated?
-        !Zensu.settings.ssl.shared_key.nil?
+      def encrypt_message?(message)
+        # HACK figure out a way for messages to say whether they should be transmitted in plaintext
+        !Zensu.settings.ssl.shared_key.nil? && 
+          !((message['result'] && message['result'].has_key?('cert')) || (message['params'] && message['params'].has_key?('cert')))
       end
     end
 

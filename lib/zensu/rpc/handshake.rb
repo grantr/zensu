@@ -2,6 +2,8 @@ module Zensu
   module RPC
     module Handshake
 
+      #TODO maybe these should move to server/client
+
       class Keymaster < Responder
         include SSL
 
@@ -30,6 +32,12 @@ module Zensu
 
         #TODO make this a state machine that transitions when key becomes valid/invalid
         #TODO there should be an actor that manages authentication. all rpc actors are supervised by this class and restarted when it detects that handshake needs to happen again
+        
+        def initialize
+          super
+
+          request!
+        end
 
         def generate_request
           Request.new("handshake", {'name' => Zensu.settings.client.name, 'cert' => Zensu.settings.ssl.certificate})

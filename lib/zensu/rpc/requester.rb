@@ -32,12 +32,18 @@ module Zensu
         response = get_response
         @timeout_timer.cancel
 
-        Zensu.logger.debug "got reply: #{response}"
-        handle_response response
+        Zensu.logger.debug "got response: #{response}"
+        if response.error?
+          Zensu.logger.error(response.error)
+        else
+          handle_response response
+        end
       end
 
       def get_response
-        RPC::Response.parse decode(@socket.read)
+        reply = @socket.read
+        Zensu.logger.debug("got reply: #{reply}")
+        RPC::Response.parse decode(reply)
       end
 
 
