@@ -17,7 +17,7 @@ module Zensu
         end
 
         # responders
-        handle :handshake, with: RPC::Handshake::Keymaster
+        handle :handshake, with: Keymaster
 
         #TODO api handlers
         # the http api should use this rpc channel instead of talking to redis directly.

@@ -15,7 +15,7 @@ module Zensu
     class Group < Celluloid::Group
       supervise Subscriber
       supervise KeepalivePusher
-      supervise RPC::Handshake::Keyslave
+      supervise Keyslave
     end
   end
 end
