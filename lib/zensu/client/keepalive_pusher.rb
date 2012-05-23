@@ -1,3 +1,5 @@
+require 'time'
+
 module Zensu
   module Client
     class KeepalivePusher < Pusher
