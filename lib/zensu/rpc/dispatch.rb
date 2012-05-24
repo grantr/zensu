@@ -8,7 +8,7 @@ module Zensu
         Zensu.logger.debug("handler for #{methods.inspect} is #{handler}")
         handler = handler.is_a?(Celluloid) ? handler : handler.supervise
         Zensu.logger.debug("handler is #{handler}")
-        methods.each do |method|
+        methods.flatten.each do |method|
           handlers[method.to_sym] = handler
         end
       end
