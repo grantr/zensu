@@ -20,6 +20,7 @@ module Zensu
           #TODO implement status logic and handle logic as filter chain
 
         else
+          # this should just add the client - anything that can get to this point is a valid client
           Zensu.logger.warn("got check result from unknown client #{message.client['name']}")
         end
 
