@@ -4,6 +4,7 @@ require 'securerandom'
 module Zensu
   class CLI < Thor
 
+    #TODO allow setting config path from the command line
     desc "server", "Run the zensu server"
     def server
       require 'zensu'
