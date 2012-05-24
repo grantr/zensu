@@ -2,6 +2,7 @@ module Zensu
   module Server
     class Keymaster < RPC::Responder
       include RPC::SSL
+      include Persistence
 
       #TODO add loop to check for updated key
 
@@ -18,8 +19,13 @@ module Zensu
       end
 
       def shared_key
-        @shared_key ||= generate_shared_key(cipher.key_len) #TODO get/set the shared key in redis
+        persister.setnx(shared_key_key, generate_shared_key(cipher.key_len))
+        @shared_key = persister.get(shared_key_key)
         Zensu.settings.ssl.shared_key = @shared_key
+      end
+
+      def shared_key_key
+        "keymaster:shared_key"
       end
     end
   end
