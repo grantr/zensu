@@ -17,6 +17,11 @@ module Zensu
       Zensu::Client.run
     end
 
+    desc "api", "Run the zensu API"
+    def api
+      require 'zensu/api'
+    end
+
     desc "root_ca", "Generate a Root CA"
     method_option :name, type: :string, desc: "Common name"
     method_option :key_file,  type: :string, desc: "Key output file",  default: "cakey.pem"
