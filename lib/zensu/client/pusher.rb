@@ -53,7 +53,7 @@ module Zensu
       # wow lame naming
       def push_check
         result = {}
-        result['check'] = check
+        result['check'] = check.merge('name' => @check)
         result['client'] = Zensu.settings.client.to_hash
         push result
       end
