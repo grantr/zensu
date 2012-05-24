@@ -4,6 +4,8 @@ module Zensu
   module Client
     class CommandPusher < CheckResultPusher
 
+      #TODO add variable substitution
+
       def initialize(check, options={})
         super
         @command = options['command']
