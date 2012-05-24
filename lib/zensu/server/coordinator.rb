@@ -1,6 +1,6 @@
 module Zensu
   module Server
-    class Elector
+    class Coordinator
       include Celluloid
 
       include Persistence
