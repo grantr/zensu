@@ -46,8 +46,18 @@ module Zensu
       end
 
       def run
-        check
+        push_check
         after(@interval) { run }
+      end
+
+      # wow lame naming
+      def push_check
+        push check
+      end
+
+      # override in subclasses
+      def check
+        "empty check"
       end
 
       #TODO result format:

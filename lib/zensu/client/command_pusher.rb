@@ -19,7 +19,7 @@ module Zensu
         result['status'] = $?.exitstatus
         result['duration'] = "%.3f" % duration.to_f
 
-        push result
+        result
       end
     end
   end

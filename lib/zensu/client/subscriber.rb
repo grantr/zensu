@@ -62,7 +62,7 @@ module Zensu
         when 'check'
           pusher = handler_for(message.check)
           if pusher
-            pusher.check
+            pusher.push_check
           else
             Zensu.logger.warn "Got unknown check #{message.check}"
           end
