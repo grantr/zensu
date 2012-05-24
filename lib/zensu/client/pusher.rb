@@ -52,7 +52,10 @@ module Zensu
 
       # wow lame naming
       def push_check
-        push check
+        result = {}
+        result['check'] = check
+        result['client'] = Zensu.settings.client.to_hash
+        push result
       end
 
       # override in subclasses

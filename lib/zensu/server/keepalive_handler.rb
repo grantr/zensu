@@ -20,10 +20,10 @@ module Zensu
 
       def handle(message)
         Zensu.logger.debug("handling keepalive: #{message}")
-        client = message.name
+        client = message.client['name']
 
         #TODO pipeline
-        persister.set client_key_for(client), MultiJson.dump(message.params)
+        persister.set client_key_for(client), MultiJson.dump(message.client)
         persister.sadd(clients_key, client)
 
         failure_detector_for(client).add
