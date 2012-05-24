@@ -19,7 +19,7 @@ module Zensu
         # responders
         handle :handshake, with: Keymaster
 
-        handle :get, :post, :delete, :put, with: APIResponder
+        handle APIResponder::IMPLEMENTED_METHODS, with: APIResponder
 
         run!
       end
