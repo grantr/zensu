@@ -16,6 +16,7 @@ module Zensu
             result['output'] = io.read
           end
         end
+        # $? is threadsafe according to http://stackoverflow.com/questions/2164887/thread-safe-external-process-in-ruby-plus-checking-exitstatus
         result['status'] = $?.exitstatus
         result['duration'] = "%.3f" % duration
 
