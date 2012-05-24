@@ -36,6 +36,9 @@ require 'zensu/client/keepalive_pusher'
 require 'zensu/client/subscriber'
 require 'zensu/client'
 
+require 'zensu/api/app'
+require 'zensu/api'
+
 module Zensu
   class << self
     def settings=(settings)

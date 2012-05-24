@@ -19,7 +19,8 @@ module Zensu
 
     desc "api", "Run the zensu API"
     def api
-      require 'zensu/api'
+      require 'zensu'
+      Zensu::API.run
     end
 
     desc "root_ca", "Generate a Root CA"
