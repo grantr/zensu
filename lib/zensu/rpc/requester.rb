@@ -45,12 +45,13 @@ module Zensu
         RPC::Response.parse decode(reply)
       end
 
-      def generate_request
+      def generate_request(method, params=nil)
         # override in subclasses
+        RPC::Request.new(method, params)
       end
 
       def handle_response(response)
-        # override in subclasses
+        response
       end
     end
   end
