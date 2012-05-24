@@ -3,6 +3,8 @@ module Zensu
     class KeepaliveHandler
       include Celluloid
 
+      include Persistence
+
       def initialize
 
         every(30) { check }
@@ -18,8 +20,11 @@ module Zensu
 
       def handle(message)
         Zensu.logger.debug("handling keepalive: #{message}")
-        return
-        client = message.client['name']
+        client = message.name
+
+        #TODO pipeline
+        persister.set client_key_for(client), MultiJson.dump(message.params)
+        persister.sadd(clients_key, client)
 
         failure_detector_for(client).add
       end
@@ -33,6 +38,14 @@ module Zensu
 
       def mark_dead(client)
         Zensu.logger.debug("marking dead: #{client}")
+      end
+      
+      def client_key_for(client)
+        "client:#{client}"
+      end
+
+      def clients_key
+        "clients"
       end
 
     end

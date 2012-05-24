@@ -10,6 +10,8 @@ module Zensu
     # leader also maintains failure detector state in redis so when leader changes the new leader can load existing fd data.
     # pushing fd state to redis is done async so redis can go down without killing detectors.
     class FailureDetector
+
+      # one persister per client is entirely too many - this needs to be a pool
       include Persistence
 
       INTERVALS_SIZE = 1000
