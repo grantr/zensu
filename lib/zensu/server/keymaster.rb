@@ -18,6 +18,7 @@ module Zensu
         end
       end
 
+      #TODO this shouldn't happen here, it's probably not thread safe.
       def shared_key
         persister.setnx(shared_key_key, generate_shared_key(cipher.key_len))
         @shared_key = persister.get(shared_key_key)

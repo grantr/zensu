@@ -18,6 +18,8 @@ module Zensu
     # TODO this might be a good place to add internal pubsub based on watching config values
     # But probably a more correct approach is to add an inproc zmq pubsub channel with modules for publishing and subscribing
 
+    # rather than actors using the global config object, they should subscribe to specific config values.
+    # subscribing to a config value gives you an accessor and notifications when that config value changes.
     def valid?
       #TODO validate required sections
       true
