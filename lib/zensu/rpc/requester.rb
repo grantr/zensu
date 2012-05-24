@@ -4,7 +4,7 @@ module Zensu
       include Celluloid::ZMQ
       include RPC::Encoding
 
-      def initialize
+      def initialize(options={})
         @socket = Celluloid::ZMQ::ReqSocket.new
 
         begin
@@ -15,6 +15,8 @@ module Zensu
           @socket.close
           raise
         end
+
+        @timeout = options[:timeout] || 5
       end
 
       def finalize
@@ -27,10 +29,7 @@ module Zensu
 
         @socket << encode(request)
 
-        # TODO configurable timeout
-        @timeout_timer = after(5) { terminate } #TODO log termination
-        response = get_response
-        @timeout_timer.cancel
+        response = future(:get_response).value(@timeout)
 
         Zensu.logger.debug "got response: #{response}"
         if response.error?
@@ -45,7 +44,6 @@ module Zensu
         Zensu.logger.debug("got reply: #{reply}")
         RPC::Response.parse decode(reply)
       end
-
 
       def generate_request
         # override in subclasses
