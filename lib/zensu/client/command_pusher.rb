@@ -17,7 +17,7 @@ module Zensu
           end
         end
         result['status'] = $?.exitstatus
-        result['duration'] = "%.3f" % duration.to_f
+        result['duration'] = "%.3f" % duration
 
         result
       end
