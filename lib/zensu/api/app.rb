@@ -23,6 +23,29 @@ module Zensu
           Zensu.logger.debug "got response from req: #{response}"
           [:ok, MultiJson.dump(response.result)]
         end
+
+        get "/checks" do
+          response = requester.request("get_checks")
+          Zensu.logger.debug "got response from req: #{response}"
+          [:ok, MultiJson.dump(response.result)]
+        end
+
+        get "/check/:name" do
+          response = requester.request("get_check", name: env['router.params'][:name])
+          Zensu.logger.debug "got response from req: #{response}"
+          [:ok, MultiJson.dump(response.result)]
+        end
+
+        post "/check/request" do
+          #TODO
+          [:ok, "not implemented"]
+        end
+
+        get "/events" do
+          response = requester.request("get_events")
+          Zensu.logger.debug "got response from req: #{response}"
+          [:ok, MultiJson.dump(response.result)]
+        end
       end
 
       def initialize
