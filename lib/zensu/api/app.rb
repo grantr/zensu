@@ -1,40 +1,70 @@
+require 'http_router'
+
 module Zensu
   module API
     class App
       include Celluloid
 
+      def setup_routes
+        get "/info" do
+          response = requester.request("get_info")
+          Zensu.logger.debug "got response from req: #{response}"
+          [:ok, MultiJson.dump(response.result)]
+        end
+
+        get "/clients" do
+          response = requester.request("get_clients")
+          Zensu.logger.debug "got response from req: #{response}"
+          [:ok, MultiJson.dump(response.result)]
+        end
+
+        get "/client/:name" do |env|
+          response = requester.request("get_client", name: env['router.params'][:name])
+          Zensu.logger.debug "got response from req: #{response}"
+          [:ok, MultiJson.dump(response.result)]
+        end
+      end
+
       def initialize
         @requester_supervisor = RPC::Requester.supervise
         @reel = Reel::Server.supervise Zensu.settings.api.host, Zensu.settings.api.port do |connection|
-          handle connection
+          dispatch connection
         end
+
+        setup_routes
+      end
+
+      def router
+        @router ||= HttpRouter.new
+      end
+
+      def get(route, &block)
+        router.get(route, &block)
+      end
+
+      def post(route, &block)
+        router.post(route, &block)
+      end
+
+      def post(route, &block)
+        router.delete(route, &block)
       end
 
       def requester
         @requester_supervisor.actor
       end
 
-      def handle(connection)
+      def dispatch(connection)
         request = connection.request
         if request #TODO why is this occasionally nil?
-          response = dispatch_request request
+          Zensu.logger.debug "Client requested: #{request.method} #{request.url}"
+
+          env = Rack::MockRequest.env_for(request.url, method: request.method)
+          response = @router.call(env)
           Zensu.logger.debug("response: #{response}")
           connection.respond *response
         end
       end
-
-      def dispatch_request(request)
-        Zensu.logger.debug "Client requested: #{request.method} #{request.url}"
-
-        if request.method == :get && request.url = "/clients"
-          response = requester.request("get_clients")
-          Zensu.logger.debug "got response from req: #{response}"
-          [:ok, MultiJson.dump(response.result)]
-        else
-          [:ok, "hello, world"]
-        end
-      end
-
     end
   end
 end
