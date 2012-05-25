@@ -19,26 +19,7 @@ module Zensu
         # responders
         handle :handshake, with: Keymaster
 
-        #TODO api handlers
-        # the http api should use this rpc channel instead of talking to redis directly.
-        # possible methods handled:
-        # api:
-        #   get   /info
-        #   get   /clients
-        #   get   /client/:name
-        #   del   /client/:name
-        #   get   /checks
-        #   get   /check/:name
-        #   post  /check/request
-        #   get   /events
-        #   get   /event/:client/:check
-        #   post  /event/resolve
-        #   post  /stash/*
-        #   get   /stash/*
-        #   del   /stash/*
-        #   get   /stashes
-        #   post  /stashes
-        #
+        handle :get, :post, :delete, :put, with: APIResponder
 
         run!
       end
