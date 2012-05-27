@@ -49,6 +49,87 @@ module Zensu
         end
       end
 
+      def delete_client(request)
+        #TODO
+      end
+
+      def get_checks(request)
+        Zensu.settings.checks
+      end
+
+      def get_check(request)
+        if Zensu.settings.checks.has_key?(request.name)
+          Zensu.settings.checks[request.name]
+        else
+          RPC::Response.new(nil, "404 Not Found", request.id)
+        end
+      end
+
+      def post_check_request(request)
+        #TODO
+      end
+
+      def get_events(request)
+        persister.smembers('clients').collect do |client|
+          persister.hgetall("events:#{client}").collect do |check, event_json|
+            MultiJson.load(event_json).merge('client' => client, 'check' => check)
+          end
+        end.flatten
+      end
+
+      def get_event(request)
+        events = persister.hgetall("events:#{request.client}")
+        if events[request.check]
+          events[request.check].merge('client' => request.client, 'check' => request.check)
+        else
+          RPC::Response.new(nil, "404 Not Found", request.id)
+        end
+      end
+
+      def post_event_resolve(request)
+        #TODO
+      end
+
+      def post_stash(request)
+        begin
+          body = MultiJson.load(request.body)
+          #TODO pipeline
+          persister.set("stash:#{request.path}", MultiJson.dump(body))
+          persister.sadd("stashes", request.path)
+          { "status" => "201 Created" }
+        rescue MultiJson::DecodeError
+          RPC::Response.new(nil, "400 Bad Request", request.id)
+        end
+      end
+
+      def get_stash(request)
+        body = persister.get("stash:#{request.path}")
+        if body
+          MultiJson.load(body)
+        else
+          RPC::Response.new(nil, "404 Not Found", request.id)
+        end
+      end
+
+      def delete_stash(request)
+        if persister.exists("stash:#{request.path}")
+          #TODO pipeline
+          persister.srem("stashes", request.path)
+          persister.del("stash:#{request.path}")
+          { "status" => "204 No Content"}
+        else
+          RPC::Response.new(nil, "404 Not Found", request.id)
+        end
+      end
+
+      def get_stashes(request)
+        persister.smembers("stashes")
+      end
+
+      def post_stashes(request)
+        #TODO
+      end
+
       def generate_response(request)
         Zensu.logger.debug("handled api request: #{request}")
         if IMPLEMENTED_METHODS.include?(request.method.to_sym)

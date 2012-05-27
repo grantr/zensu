@@ -34,6 +34,7 @@ module Zensu
         Zensu.logger.debug "got response: #{response}"
         if response.error?
           Zensu.logger.error(response.error)
+          handle_response response #TODO how to handle errors?
         else
           handle_response response
         end

@@ -21,6 +21,7 @@ module Zensu
         getset
         setnx
         del
+        exists
 
         sadd
         smembers
