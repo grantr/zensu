@@ -45,7 +45,7 @@ module Zensu
         if client
           MultiJson.load client
         else
-          RPC::Response.new(nil, "404 Not Found", request.id)
+          [nil, "404 Not Found"]
         end
       end
 
@@ -61,7 +61,7 @@ module Zensu
         if Zensu.settings.checks.has_key?(request.name)
           Zensu.settings.checks[request.name]
         else
-          RPC::Response.new(nil, "404 Not Found", request.id)
+          [nil, "404 Not Found"]
         end
       end
 
@@ -82,7 +82,7 @@ module Zensu
         if events[request.check]
           events[request.check].merge('client' => request.client, 'check' => request.check)
         else
-          RPC::Response.new(nil, "404 Not Found", request.id)
+          [nil, "404 Not Found"]
         end
       end
 
@@ -98,7 +98,7 @@ module Zensu
           persister.sadd("stashes", request.path)
           { "status" => "201 Created" }
         rescue MultiJson::DecodeError
-          RPC::Response.new(nil, "400 Bad Request", request.id)
+          [nil, "400 Bad Request"]
         end
       end
 
@@ -107,7 +107,7 @@ module Zensu
         if body
           MultiJson.load(body)
         else
-          RPC::Response.new(nil, "404 Not Found", request.id)
+          [nil, "404 Not Found"]
         end
       end
 
@@ -118,7 +118,7 @@ module Zensu
           persister.del("stash:#{request.path}")
           { "status" => "204 No Content"}
         else
-          RPC::Response.new(nil, "404 Not Found", request.id)
+          [nil, "404 Not Found"]
         end
       end
 
@@ -133,8 +133,8 @@ module Zensu
       def generate_response(request)
         Zensu.logger.debug("handled api request: #{request}")
         if IMPLEMENTED_METHODS.include?(request.method.to_sym)
-          response = send(request.method, request)
-          response.is_a?(RPC::Response) ? response : RPC::Response.new(response, nil, request.id)
+          result, error = send(request.method, request)
+          RPC::Response.new(result, error, request.id)
         else
           RPC::Response.new(nil, "404 Not Found", request.id)
         end
