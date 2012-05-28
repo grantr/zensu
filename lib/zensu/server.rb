@@ -13,6 +13,7 @@ module Zensu
 
 
     class Group < Celluloid::Group
+      supervise Pubsub::Broker
       supervise Coordinator
       supervise Puller
       supervise ResponseRouter

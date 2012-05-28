@@ -71,7 +71,6 @@ module Zensu
         run!
       end
 
-
       def setup_publisher
         @pub_socket.close if @pub_socket
         @pub_socket = Celluloid::ZMQ::PubSocket.new

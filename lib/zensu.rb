@@ -9,6 +9,8 @@ Celluloid::ZMQ.init
 
 require 'cabin'
 
+require 'zensu/pubsub'
+
 require 'zensu/settings'
 
 require 'zensu/rpc'
