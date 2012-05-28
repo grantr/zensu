@@ -15,7 +15,7 @@ module Zensu
           }
           response = RPC::Response.new(result, nil, request.id)
         else
-          response = RPC::Response.new(nil, "Invalid certificate", request.id)
+          response = RPC::Response.new(nil, "unauthorized", request.id)
         end
         response.tap do |r|
           r.plaintext = true
