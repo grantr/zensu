@@ -14,6 +14,7 @@ module Zensu
     end
 
     class Group < Celluloid::Group
+      supervise Client::Keyslave, args: [{:handshake => true}]
       supervise App
     end
   end
