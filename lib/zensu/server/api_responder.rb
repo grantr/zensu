@@ -29,15 +29,15 @@ module Zensu
           'health' => {
             'redis' => 'ok', #TODO
             'rabbitmq' => 'ok' #TODO what to do with this?
-            #TODO add server healths
+            #TODO add server health
           }
         }
       end
 
       def get_clients(request)
-        persister.smembers('clients').collect do |client|
+        [persister.smembers('clients').collect do |client|
           MultiJson.load persister.get("client:#{client}")
-        end
+        end]
       end
 
       def get_client(request)
@@ -45,7 +45,7 @@ module Zensu
         if client
           MultiJson.load client
         else
-          [nil, "404 Not Found"]
+          [nil, :not_found]
         end
       end
 
@@ -61,7 +61,7 @@ module Zensu
         if Zensu.settings.checks.has_key?(request.name)
           Zensu.settings.checks[request.name]
         else
-          [nil, "404 Not Found"]
+          [nil, :not_found]
         end
       end
 
@@ -70,11 +70,11 @@ module Zensu
       end
 
       def get_events(request)
-        persister.smembers('clients').collect do |client|
+        [persister.smembers('clients').collect do |client|
           persister.hgetall("events:#{client}").collect do |check, event_json|
             MultiJson.load(event_json).merge('client' => client, 'check' => check)
           end
-        end.flatten
+        end.flatten]
       end
 
       def get_event(request)
@@ -82,7 +82,7 @@ module Zensu
         if events[request.check]
           events[request.check].merge('client' => request.client, 'check' => request.check)
         else
-          [nil, "404 Not Found"]
+          [nil, :not_found]
         end
       end
 
@@ -91,14 +91,18 @@ module Zensu
       end
 
       def post_stash(request)
+        if request.path.empty?
+          return [nil, :bad_request]
+        end
+
         begin
           body = MultiJson.load(request.body)
           #TODO pipeline
           persister.set("stash:#{request.path}", MultiJson.dump(body))
           persister.sadd("stashes", request.path)
-          { "status" => "201 Created" }
+          { "status" => :created }
         rescue MultiJson::DecodeError
-          [nil, "400 Bad Request"]
+          [nil, :bad_request]
         end
       end
 
@@ -107,7 +111,7 @@ module Zensu
         if body
           MultiJson.load(body)
         else
-          [nil, "404 Not Found"]
+          [nil, :not_found]
         end
       end
 
@@ -116,14 +120,14 @@ module Zensu
           #TODO pipeline
           persister.srem("stashes", request.path)
           persister.del("stash:#{request.path}")
-          { "status" => "204 No Content"}
+          { "status" => :no_content }
         else
-          [nil, "404 Not Found"]
+          [nil, :not_found]
         end
       end
 
       def get_stashes(request)
-        persister.smembers("stashes")
+        [persister.smembers("stashes")]
       end
 
       def post_stashes(request)
@@ -136,7 +140,7 @@ module Zensu
           result, error = send(request.method, request)
           RPC::Response.new(result, error, request.id)
         else
-          RPC::Response.new(nil, "404 Not Found", request.id)
+          RPC::Response.new(nil, :not_found, request.id)
         end
       end
     end

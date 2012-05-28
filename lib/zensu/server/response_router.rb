@@ -42,7 +42,7 @@ module Zensu
         if handler
           response = handler.respond(request)
         else
-          response = RPC::Response.new(nil, "Unknown method", request.id)
+          response = RPC::Response.new(nil, :method_not_allowed, request.id)
         end
         Zensu.logger.debug "sending response: #{response}"
         @socket << encode(response)
