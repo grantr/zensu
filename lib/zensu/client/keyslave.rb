@@ -14,7 +14,9 @@ module Zensu
       end
 
       def generate_request
-        RPC::Request.new("handshake", {'name' => Zensu.settings.client.name, 'cert' => Zensu.settings.ssl.certificate})
+        RPC::Request.new("handshake", {'name' => Zensu.settings.client.name, 'cert' => Zensu.settings.ssl.certificate}).tap do |r|
+          r.plaintext = true
+        end
       end
 
       def handle_response(response)

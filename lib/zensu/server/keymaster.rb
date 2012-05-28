@@ -11,10 +11,14 @@ module Zensu
           result = { 
             'cert' => Zensu.settings.ssl.certificate, 
             'cipher' => Zensu.settings.ssl.cipher,
-            'shared_key' => public_encrypt(request.cert, shared_key) }
-            RPC::Response.new(result, nil, request.id)
+            'shared_key' => public_encrypt(request.cert, shared_key) 
+          }
+          response = RPC::Response.new(result, nil, request.id)
         else
-          RPC::Response.new(nil, "Invalid certificate", request.id)
+          response = RPC::Response.new(nil, "Invalid certificate", request.id)
+        end
+        response.tap do |r|
+          r.plaintext = true
         end
       end
 

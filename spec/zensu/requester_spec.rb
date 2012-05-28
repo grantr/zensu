@@ -24,6 +24,7 @@ describe Zensu::RPC::Requester do
   before(:each) do
     # for ips
     Zensu.settings = Zensu::Settings.load(config_file('config.json'))
+    Zensu.settings.ssl.shared_key = subject.generate_shared_key(32)
   end
 
   after(:each) do

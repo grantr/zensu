@@ -8,11 +8,11 @@ module Zensu
 
 
       def encode(message)
-        message = message.respond_to?(:as_json) ? message.as_json : message
+        body = message.respond_to?(:as_json) ? message.as_json : message
         if encrypt_message?(message)
-          data = encrypt_message MultiJson.dump(message)
+          data = encrypt_message MultiJson.dump(body)
         else
-          data = MultiJson.dump message
+          data = MultiJson.dump body
         end
         Zensu.logger.debug "sending: #{data}"
         data
@@ -51,9 +51,7 @@ module Zensu
       end
 
       def encrypt_message?(message)
-        # HACK figure out a way for messages to say whether they should be transmitted in plaintext
-        !Zensu.settings.ssl.shared_key.nil? && 
-          !((message['result'] && message['result'].respond_to?(:has_key?) && message['result'].has_key?('cert')) || (message['params'] && message['params'].respond_to?(:has_key?) && message['params'].has_key?('cert')))
+        Zensu.settings.ssl.encryption? && !(message.respond_to?(:plaintext?) && message.plaintext?)
       end
     end
 

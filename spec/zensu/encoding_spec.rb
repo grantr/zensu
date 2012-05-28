@@ -7,6 +7,7 @@ describe Zensu::RPC::Encoding do
   before(:each) do
     # for ssl certs
     Zensu.settings = Zensu::Settings.load(config_file('config.json'))
+    Zensu.settings.ssl.shared_key = subject.generate_shared_key(32)
   end
   
   it 'encodes and decodes plain-text messages' do

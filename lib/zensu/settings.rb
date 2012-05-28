@@ -56,6 +56,14 @@ module Zensu
         self['private_key'] ||= File.read(key_file)
       end
 
+      def authentication?
+        self['authentication'].nil? ? true : self['authentication']
+      end
+
+      def encryption?
+        self['encryption'].nil? ? true : self['encryption']
+      end
+
       def cipher
         self['cipher'] ||= 'AES-256-CBC'
       end

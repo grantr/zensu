@@ -21,6 +21,14 @@ module Zensu
         # patch bump: backwards compatible bug fixes
         { 'jsonrpc' => '2.0', 'v' => VERSION_STRING }
       end
+
+      def plaintext?
+        @plaintext
+      end
+
+      def plaintext=(plaintext)
+        @plaintext = plaintext
+      end
     end
 
     Notification = Struct.new(:method, :params) do
