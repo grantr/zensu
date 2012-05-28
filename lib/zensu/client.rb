@@ -13,7 +13,6 @@ module Zensu
 
 
     class Group < Celluloid::Group
-      supervise Pubsub::Broker
       supervise Subscriber
       supervise KeepalivePusher
       supervise Keyslave, args: [{:handshake => true}]

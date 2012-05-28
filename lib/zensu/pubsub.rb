@@ -19,44 +19,43 @@ module Zensu
       @pubsub.actor.subscribe(topic, &block)
     end
 
+    class BrokerRunningError < StandardError; end
     class Broker
-      include Celluloid::ZMQ
+      include Celluloid
 
+      MUTEX = Mutex.new
       def initialize
-        setup_source
-        setup_sink
-        run!
-      end
-
-      def setup_source
-        @sub_socket.close if @sub_socket
-        @sub_socket = Celluloid::ZMQ::SubSocket.new
-
+        MUTEX.lock
         begin
-          @sub_socket.bind("inproc://celluloid-pubsub-source")
-          @sub_socket.subscribe("")
-        rescue IOError => e
-          @sub_socket.close
-          raise
+          if Actor[:broker] && Actor[:broker].alive?
+            raise BrokerRunningError
+          else
+            Actor[:broker] = Actor.current
+            run!
+          end
+        ensure
+          MUTEX.unlock rescue nil
         end
       end
 
-      def setup_sink
-        @pub_socket.close if @pub_socket
-        @pub_socket = Celluloid::ZMQ::PubSocket.new
+      def subscribers
+        @subscribers ||= []
+      end
 
-        begin
-          @pub_socket.bind("inproc://celluloid-pubsub-sink")
-        rescue IOError => e
-          @pub_socket.close
-          raise
-        end
+      def add_subscriber(subscriber)
+        subscribers << subscriber
       end
 
       def run
         loop do
-          topic, message = @sub_socket.read, @sub_socket.read
-          @pub_socket.send_multiple([topic, message])
+          message = receive
+          subscribers.each do |subscriber|
+            if subscriber.alive?
+              subscriber.mailbox << message
+            else
+              subscribers.delete(subscriber)
+            end
+          end
         end
       end
 
@@ -65,50 +64,33 @@ module Zensu
     class Notifier
       include Celluloid::ZMQ
 
+      trap_exit :broker_died
+
       def initialize
-        setup_publisher
-        setup_subscriber
+        start_broker
         run!
       end
 
-      def setup_publisher
-        @pub_socket.close if @pub_socket
-        @pub_socket = Celluloid::ZMQ::PubSocket.new
-
+      def start_broker
         begin
-          @pub_socket.connect("inproc://celluloid-pubsub-source")
-        rescue IOError => e
-          @pub_socket.close
-          raise
+          Actor[:broker] ||= Broker.new
+        rescue BrokerRunningError
         end
-
+        Actor.current.link Actor[:broker]
+        Actor[:broker].add_subscriber!(Actor.current)
       end
 
-      def setup_subscriber
-        @sub_socket.close if @sub_socket
-        @sub_socket = Celluloid::ZMQ::SubSocket.new
-
-        begin
-          @sub_socket.connect("inproc://celluloid-pubsub-sink")
-          unless subscriptions.empty?
-            subscriptions.each do |topic, subscriptions|
-              @sub_socket.subscribe(topic)
-            end
-          end
-        rescue IOError
-          @sub_socket.close
-          raise
-        end
+      def broker_died(actor, reason)
+        puts "broker died: #{actor} #{reason}"
       end
 
       def publish(topic, message)
-        @pub_socket.send_multiple [topic.to_s, Marshal.dump(message)]
+        Actor[:broker].mailbox << [topic, message]
       end
 
       def subscribe(topic, &block)
-        @sub_socket.subscribe(topic.to_s)
-        subscriptions[topic.to_s] ||= []
-        subscriptions[topic.to_s] << block
+        subscriptions[topic] ||= []
+        subscriptions[topic] << block
       end
 
       def subscriptions
@@ -117,17 +99,15 @@ module Zensu
 
       def run
         loop do
-          topic =   @sub_socket.read
-          message = @sub_socket.read
-
+          topic, message = receive
           call_subscriptions_for(topic, message)
         end
       end
 
       def call_subscriptions_for(topic, message)
-        if subscriptions[topic.to_s]
-          subscriptions[topic.to_s].each do |subscription|
-            subscription.call(Marshal.load(message), topic.to_s)
+        if subscriptions[topic]
+          subscriptions[topic].each do |subscription|
+            subscription.call(message, topic)
           end
         end
       end
