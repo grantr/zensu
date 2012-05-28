@@ -5,6 +5,13 @@ module Zensu
       include RPC::Encoding
 
       def initialize(options={})
+        setup_socket
+
+        @timeout = options[:timeout] || 5
+      end
+
+      def setup_socket
+        @socket.close if @socket
         @socket = Celluloid::ZMQ::ReqSocket.new
 
         begin
@@ -15,8 +22,6 @@ module Zensu
           @socket.close
           raise
         end
-
-        @timeout = options[:timeout] || 5
       end
 
       def finalize
@@ -29,7 +34,15 @@ module Zensu
 
         @socket << encode(request)
 
-        response = future(:get_response).value(@timeout)
+        begin
+          response = future(:get_response).value(@timeout)
+        rescue => e
+          if e.message =~ /Timed out/ #TODO better exception from celluloid
+            response = RPC::Response.new(nil, "gateway_timeout", request.id)
+          end
+          setup_socket
+          #TODO should this raise?
+        end
 
         Zensu.logger.debug "got response: #{response}"
         if response.error?
