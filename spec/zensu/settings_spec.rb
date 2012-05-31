@@ -9,12 +9,12 @@ describe Zensu::Settings do
 
   it 'parses json' do
     subject = Zensu::Settings.parse(File.read(config_file('config.json')))
-    subject.redis.host.should == 'localhost'
+    subject.redis.host.should == '127.0.0.1'
   end
 
   it 'loads json files' do
     subject = Zensu::Settings.load(config_file('config.json'))
-    subject.redis.host.should  == 'localhost'
+    subject.redis.host.should  == '127.0.0.1'
   end
 
   it 'loads ssl files' do

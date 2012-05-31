@@ -1,24 +1,24 @@
 {
   "redis": {
-    "host": "localhost",
+    "host": "127.0.0.1",
     "port": 6379
   },
   
   "server": {
-    "host": "localhost",
+    "host": "127.0.0.1",
     "broadcast_port": 5565,
     "results_port": 5566,
-    "auth_port": 5567
+    "rpc_port": 5567
   },
 
   "api": {
-    "host": "localhost",
+    "host": "127.0.0.1",
     "port": 4567,
     "user": "foo",
     "password": "bar"
   },
   "dashboard": {
-    "host": "localhost",
+    "host": "127.0.0.1",
     "port": 8080,
     "user": "admin",
     "password": "secret"
