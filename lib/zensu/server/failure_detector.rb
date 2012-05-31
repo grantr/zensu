@@ -1,3 +1,5 @@
+require 'securerandom'
+
 module Zensu
   module Server
 
@@ -14,13 +16,12 @@ module Zensu
       # one persister per client is entirely too many - this needs to be a pool
       include Persistence
 
-      INTERVALS_SIZE = 1000
-
       attr_reader :phi_threshold
 
-      def initialize(name, options = {})
-        @name = name
+      def initialize(name=nil, options = {})
+        @name = name || SecureRandom.uuid
         @phi_threshold = options[:phi_threshold] || 8
+        @intervals_size = options[:intervals_size] || 1000
       end
 
       def add(arrival_time = Time.now.to_i)
@@ -29,7 +30,7 @@ module Zensu
         i = last_time.nil? ? 0.75 : arrival_time - last_time.to_i
         #TODO pipeline
         persister.lpush(intervals_key, i)
-        persister.ltrim(intervals_key, 0, INTERVALS_SIZE-1)
+        persister.ltrim(intervals_key, 0, @intervals_size-1)
       end
 
       def phi(current_time = Time.now.to_i)
@@ -42,13 +43,21 @@ module Zensu
       end
 
       def interval_mean
-        intervals = persister.lrange(intervals_key, 0, INTERVALS_SIZE-1)
+        intervals = intervals
         return nil unless intervals
         intervals.inject(:+) / intervals.size.to_f
       end
 
       def suspicious?
         phi > @phi_threshold
+      end
+
+      def intervals
+        persister.lrange(intervals_key, 0, @intervals_size-1)
+      end
+
+      def last_time
+        persister.get(last_time_key)
       end
 
       def last_time_key
