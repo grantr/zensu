@@ -6,21 +6,24 @@ module Zensu
 
     #TODO allow setting config path from the command line
     desc "server", "Run the zensu server"
+    method_option :config, aliases: '-c', type: :string, desc: "Config file"
     def server
       require 'zensu'
-      Zensu::Server.run
+      Zensu::Server.run(options)
     end
 
     desc "client", "Run the zensu client"
+    method_option :config, aliases: '-c', type: :string, desc: "Config file"
     def client
       require 'zensu'
-      Zensu::Client.run
+      Zensu::Client.run(options)
     end
 
     desc "api", "Run the zensu API"
+    method_option :config, aliases: '-c', type: :string, desc: "Config file"
     def api
       require 'zensu'
-      Zensu::API.run
+      Zensu::API.run(options)
     end
 
     desc "root_ca", "Generate a Root CA"

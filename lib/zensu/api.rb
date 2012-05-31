@@ -3,13 +3,13 @@ require 'reel'
 module Zensu
   module API
 
-    def self.run
-      Zensu.setup
+    def self.run(options={})
+      Zensu.setup(options)
       Group.run
     end
 
-    def self.run!
-      Zensu.setup
+    def self.run!(options={})
+      Zensu.setup(options)
       Group.run!
     end
 
