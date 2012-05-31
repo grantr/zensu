@@ -8,6 +8,8 @@ if ENV['COVERAGE'] == 'true' && RUBY_ENGINE == "ruby"
 end
 
 require 'zensu'
+Zensu.logger = nil
+
 
 Dir['./spec/support/*.rb'].map {|f| require f }
 
