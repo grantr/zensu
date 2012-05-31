@@ -1,18 +1,6 @@
 require 'spec_helper'
 
 describe Zensu::RPC::Requester do
-  let(:requester_class) do
-    Class.new(Zensu::RPC::Requester) do
-      def generate_request
-        Zensu::RPC::Request.new("test")
-      end
-
-      def handle_response(request)
-        "success"
-      end
-    end
-  end
-
   let(:responder_class) do
     Class.new(Zensu::RPC::Responder) do
       def respond(request)
@@ -27,24 +15,25 @@ describe Zensu::RPC::Requester do
     Zensu.settings.ssl.shared_key = subject.generate_shared_key(32)
   end
 
-  after(:each) do
-    subject.terminate
-  end
-
   #TODO how to test this?
-  # it 'should time out' do
-  #   requester = requester_class.new(timeout: 1)
-  #   -> { requester.request; requester.sleep 1 }.should raise_error(Celluloid::Task::TerminatedError)
-  # end
+  it 'should time out' do
+    quick_requester = described_class.new(timeout: 0.1)
+    response = quick_requester.request('test')
+    response.should be_a(Zensu::RPC::Response)
+    response.should be_error
+    response.error.should == "gateway_timeout"
+    quick_requester.terminate
+  end
 
 
   it 'should return the response' do
     rr = Zensu::Server::ResponseRouter.new
     rr.handle :test, with: responder_class
-    requester = requester_class.new
-    response = requester.request
-    response.should == 'success'
-    requester.terminate
+    response = subject.request('test')
+    response.should be_a(Zensu::RPC::Response)
+    response.should be_success
+    response.result.should == 'success'
+    rr.terminate
   end
 
 end
