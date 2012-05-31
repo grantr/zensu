@@ -10,7 +10,7 @@ module Zensu
         @socket = Celluloid::ZMQ::RepSocket.new
 
         begin
-          @socket.bind("tcp://127.0.0.1:#{Zensu.settings.server.rpc_port}") #TODO use config for bind address and port
+          @socket.bind("tcp://#{Zensu.settings.server.host}:#{Zensu.settings.server.rpc_port}") #TODO use config for bind address and port
         rescue IOError
           @socket.close
           raise
