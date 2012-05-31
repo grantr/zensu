@@ -2,6 +2,12 @@ module Zensu
   module RPC
     module Dispatch
 
+      def finalize
+        handlers.values.each do |handler|
+          handler.terminate if handler.alive?
+        end
+      end
+
       # :with can be either an actor or an actor class
       def handle(*methods, options)
         handler = options.delete(:with)

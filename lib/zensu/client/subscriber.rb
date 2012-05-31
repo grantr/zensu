@@ -41,6 +41,7 @@ module Zensu
       end
 
       def finalize
+        super
         @socket.close if @socket
       end
 
