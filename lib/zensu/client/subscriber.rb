@@ -46,7 +46,6 @@ module Zensu
       end
 
       def add_pusher(check, options)
-        @pushers ||= {}
         Zensu.logger.debug("adding pusher for check: #{check} #{options}")
 
         if options['command']
