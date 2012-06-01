@@ -10,7 +10,7 @@ module Zensu
         @socket = PullSocket.new
 
         begin
-          @socket.bind("tcp://127.0.0.1:#{Zensu.settings.server.results_port}") # TODO config address and port
+          @socket.bind("tcp://#{Zensu.settings.server.host}:#{Zensu.settings.server.results_port}")
         rescue IOError
           @socket.close
           raise

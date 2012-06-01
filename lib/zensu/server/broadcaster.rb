@@ -9,10 +9,10 @@ module Zensu
         @socket = Celluloid::ZMQ::PubSocket.new
 
         begin
-          @socket.bind("tcp://127.0.0.1:#{Zensu.settings.server.broadcast_port}") #TODO use config for bind address and port
+          @socket.bind("tcp://#{Zensu.settings.server.host}:#{Zensu.settings.server.broadcast_port}")
         rescue IOError
           @socket.close
-          raise
+          raise e
         end
 
         Zensu.settings.checks.each do |check, options|
