@@ -11,9 +11,7 @@ module Zensu
       # :with can be either an actor or an actor class
       def handle(*methods, options)
         handler = options.delete(:with)
-        Zensu.logger.debug("handler for #{methods.inspect} is #{handler}")
         handler = handler.is_a?(Celluloid) ? handler : handler.supervise
-        Zensu.logger.debug("handler is #{handler}")
         methods.flatten.each do |method|
           handlers[method.to_sym] = handler
         end
