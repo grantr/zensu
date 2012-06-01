@@ -68,11 +68,12 @@ module Zensu
       load_settings(options[:config])
     end
 
+    #TODO this should go in settings.rb
     def load_settings(config_file=nil)
       unless config_file
         config_paths = [
           "/etc/zensu",
-          "/etc/sensu",
+          #"/etc/sensu",
           File.join(File.dirname(__FILE__), '..', 'examples')
         ]
         path = config_paths.detect { |p| File.exist?(File.join(p, "config.json")) }
