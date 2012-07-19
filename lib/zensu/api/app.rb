@@ -4,6 +4,7 @@ module Zensu
   module API
     class App
       include Celluloid
+      #TODO use octarine instead
 
       def setup_routes
         get "/info" do
