@@ -51,7 +51,7 @@ module Zensu
       root_ca.add_extension(ef.create_extension("keyUsage","keyCertSign, cRLSign", true))
       root_ca.add_extension(ef.create_extension("subjectKeyIdentifier","hash",false))
       root_ca.add_extension(ef.create_extension("authorityKeyIdentifier","keyid:always",false))
-      root_ca.sign(root_key, OpenSSL::Digest::SHA256.new)
+      root_ca.sign(root_key, OpenSSL::Digest::SHA512.new)
       File.open(options[:key_file], "w") { |f| f.write(root_key.to_pem) }
       File.open(options[:cert_file], "w") { |f| f.write(root_ca.to_pem) }
     end
@@ -86,7 +86,7 @@ module Zensu
       ef.issuer_certificate = root_ca
       cert.add_extension(ef.create_extension("keyUsage","digitalSignature", true))
       cert.add_extension(ef.create_extension("subjectKeyIdentifier","hash",false))
-      cert.sign(root_key, OpenSSL::Digest::SHA256.new)
+      cert.sign(root_key, OpenSSL::Digest::SHA512.new)
       File.open(key_file, "w") { |f| f.write(key.to_pem) }
       File.open(cert_file, "w") { |f| f.write(cert.to_pem) }
     end
