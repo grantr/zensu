@@ -10,7 +10,7 @@ module Zensu
 
         begin
           @socket.bind("tcp://#{Zensu.settings.server.host}:#{Zensu.settings.server.broadcast_port}")
-        rescue IOError
+        rescue IOError => e
           @socket.close
           raise e
         end
