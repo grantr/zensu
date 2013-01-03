@@ -2,7 +2,7 @@ require 'http_router'
 
 module Zensu
   module API
-    class App
+    class Handler
       include Celluloid
       #TODO use octarine instead
 

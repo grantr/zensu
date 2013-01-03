@@ -3,16 +3,16 @@ module Zensu
 
     def self.run(options={})
       Zensu.setup(options)
-      Group.run
+      App.run
     end
 
     def self.run!(options={})
       Zensu.setup(options)
-      Group.run!
+      App.run!
     end
 
 
-    class Group < Celluloid::Group
+    class App < Celluloid::SupervisionGroup
       supervise Subscriber
       supervise KeepalivePusher
       supervise Keyslave, args: [{:handshake => true}]

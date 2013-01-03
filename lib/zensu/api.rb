@@ -5,17 +5,17 @@ module Zensu
 
     def self.run(options={})
       Zensu.setup(options)
-      Group.run
+      App.run
     end
 
     def self.run!(options={})
       Zensu.setup(options)
-      Group.run!
+      App.run!
     end
 
-    class Group < Celluloid::Group
+    class App < Celluloid::SupervisionGroup
       supervise Client::Keyslave, args: [{:handshake => true}]
-      supervise App
+      supervise Handler
     end
   end
 end
