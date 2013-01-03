@@ -14,6 +14,48 @@ module Zensu
 
       # TODO allow usage of fakeredis or even non-redis databases like zookeeper
       # could likely simulate all required redis ops with any consistent kv store
+      #
+      # data structures:
+      # clients:
+      # individual client data
+      # clients set (index)
+      # 
+      # aggregates: (aggregate check results across clients)
+      # aggregate per check/timestamp pair
+      # per-status/total counter increments
+      # set of timestamps per check
+      # checks set
+      #
+      # history:
+      # set of checks received for a client
+      # time-ordered list of statuses for each client/check pair
+      #   recent-item list scan to detect flapping
+      #   trim old list events
+      #
+      # events:
+      # one event per client/check pair
+      #
+      # master election:
+      #   set if not exist
+      #   atomic getset
+      
+      # This could probably be remodeled intelligently as:
+      # Client
+      #   has_many :checks
+      #
+      # Check
+      #   belongs_to :client
+      #   has_many :check_results
+      #
+      #   event data is on this record
+      #
+      # CheckResult
+      #   belongs_to :check
+      #
+      # Aggregate
+      #   has_many :checks
+      # aggregation should probably be a handler
+      #
 
       REDIS_METHODS = %w(
         get
