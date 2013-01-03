@@ -13,7 +13,6 @@ module Zensu
 
 
     class App < Celluloid::SupervisionGroup
-      supervise Coordinator
       supervise Puller
       supervise ResponseRouter
     end
