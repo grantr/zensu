@@ -20,16 +20,12 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "celluloid"
   gem.add_runtime_dependency "celluloid-zmq"
   gem.add_runtime_dependency "reel"
-  gem.add_runtime_dependency "http_router"
   gem.add_runtime_dependency "multi_json", [ ">= 1.3.0" ]
-  gem.add_runtime_dependency "redis"
   gem.add_runtime_dependency "thor"
   gem.add_runtime_dependency "hashie"
-  gem.add_runtime_dependency "cabin"
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'guard-rspec'
   gem.add_development_dependency 'simplecov'
-  gem.add_development_dependency 'fakeredis'
 end
