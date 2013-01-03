@@ -29,14 +29,14 @@ module Zensu
           add_pusher(check, options)
         end
 
-        run!
+        async.run
       end
 
       def run
         loop do
           topic   = @socket.read
           message = @socket.read
-          dispatch! RPC::Notification.parse(decode(message))
+          async.dispatch RPC::Notification.parse(decode(message))
         end
       end
 

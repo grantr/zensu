@@ -41,7 +41,7 @@ module Zensu
 
         if options['standalone']
           @interval = options['interval'] || Zensu.settings.default_check_interval
-          run!
+          async.run
         end
       end
 

@@ -15,7 +15,7 @@ module Zensu
       
       def initialize
         @is_leader = false
-        run!
+        async.run
       end
 
       def finalize
@@ -39,13 +39,13 @@ module Zensu
 
       def request_leader_election
         if persister.setnx(leader_lock_key, Time.now.to_i)
-          promote!
+          async.promote
         else
           timestamp = persister.get(leader_lock_key)
           if Time.now.to_i - timestamp.to_i >= 60
             previous = persister.getset(leader_lock_key, Time.now.to_i)
             if previous == timestamp
-              promote!
+              async.promote
             end
           end
 

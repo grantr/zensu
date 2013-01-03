@@ -28,7 +28,7 @@ module Zensu
         interval = options['interval'] || Zensu.settings.default_check_interval
         every(interval) do
           options['subscribers'].each do |subscriber|
-            broadcast! subscriber, RPC::Notification.new('check', { 'check' => check })
+            async.broadcast subscriber, RPC::Notification.new('check', { 'check' => check })
           end
         end
       end

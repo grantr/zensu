@@ -19,13 +19,13 @@ module Zensu
         handle :keepalive, with: KeepaliveHandler
         handle :result, with: CheckResultHandler
 
-        run!
+        async.run
       end
 
       def run
         loop do
           message = @socket.read
-          dispatch! RPC::Notification.parse(decode(message))
+          async.dispatch RPC::Notification.parse(decode(message))
         end
       end
 

@@ -21,7 +21,7 @@ module Zensu
 
         handle APIResponder::IMPLEMENTED_METHODS, with: APIResponder
 
-        run!
+        async.run
       end
 
       def run
@@ -29,7 +29,7 @@ module Zensu
           request = @socket.read
           Zensu.logger.debug "received request: #{request}"
           #TODO validate request
-          dispatch! RPC::Request.parse(decode(request))
+          async.dispatch RPC::Request.parse(decode(request))
         end
       end
 

@@ -10,7 +10,7 @@ module Zensu
       def initialize(options={})
         super()
 
-        request! if options[:handshake]
+        async.request if options[:handshake]
       end
 
       def generate_request

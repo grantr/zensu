@@ -8,7 +8,7 @@ module Zensu
 
     def self.run!(options={})
       Zensu.setup(options)
-      App.run!
+      App.async.run
     end
 
 
