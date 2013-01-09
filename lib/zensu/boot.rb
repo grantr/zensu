@@ -1,0 +1,1 @@
+Celluloid::ZMQ.init
