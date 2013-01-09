@@ -1,21 +1,11 @@
+require 'zensu/client/stethoscope'
+
 module Zensu
   module Client
-
-    def self.run(options={})
-      Zensu.setup(options)
-      App.run
-    end
-
-    def self.run!(options={})
-      Zensu.setup(options)
-      App.async.run
-    end
-
-
     class App < Celluloid::SupervisionGroup
-      supervise Subscriber
-      supervise KeepalivePusher
-      supervise Keyslave, args: [{:handshake => true}]
+      #TODO settings, or inherit
+      supervise Celluloid::ZMQ::PubsubNotifier, as: :broadcast_notifier, args: [nil, ["tcp://127.0.0.1:58001"]]
+      supervise Stethoscope
     end
   end
 end
