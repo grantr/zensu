@@ -4,11 +4,11 @@ module Zensu
   module Client
     class Stethoscope
       include Celluloid
-      include Zensu::Broadcast
+      include Zensu::RemoteNotifications
 
       def initialize
         @failure_detectors = {}
-        broadcast.subscribe(Actor.current, /^zensu.heartbeat/, :record_heartbeat)
+        remote_subscribe(/^zensu.heartbeat/, :record_heartbeat)
       end
 
       #? Should this use subscriptions to route? We know the possible servers
