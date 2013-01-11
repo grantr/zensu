@@ -9,7 +9,7 @@ require 'zensu/remote_notifications'
 module Zensu
   class << self
     def id
-      '1' #TODO
+      @id ||= Celluloid::UUID.generate #TODO
     end
   end
 end
