@@ -38,6 +38,7 @@ module Zensu
 
     #TODO make fetch, store, and delete protected
 
+    #TODO key and action should be sent as arguments as well as the topic
     def publish_update(key, previous, current)
       if previous.is_a?(Array) && current.is_a?(Array)
         publish_array_update(key, previous, current)
