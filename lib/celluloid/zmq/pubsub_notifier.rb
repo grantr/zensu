@@ -20,6 +20,7 @@ module Celluloid
         @pub.close if @pub
 
         @pub = PubSocket.new
+        SocketMonitor.new_link(@pub, "zmq.pubsub_notifier.pub")
 
         begin
           @pub.bind(@endpoint)
@@ -33,6 +34,7 @@ module Celluloid
         @sub.close if @sub
 
         @sub = SubSocket.new
+        SocketMonitor.new_link(@sub, "zmq.pubsub_notifier.sub")
         @sub.subscribe("")
 
         #TODO add peers? could end up looping
