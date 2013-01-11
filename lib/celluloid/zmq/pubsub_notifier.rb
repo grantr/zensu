@@ -5,12 +5,14 @@ module Celluloid
 
       attr_accessor :peers, :endpoint
 
+      #TODO support multiple endpoints
       def initialize(endpoint=nil, peer_endpoints=[])
         super()
 
         @endpoint = endpoint
         init_pub_socket if @endpoint
 
+        @peers = []
         Array(peer_endpoints).each do |peer_endpoint|
           add_peer(peer_endpoint)
         end
@@ -42,7 +44,6 @@ module Celluloid
       end
 
       def add_peer(endpoint)
-        @peers ||= []
         init_sub_socket if @peers.empty?
         begin
           @peers << endpoint
@@ -51,6 +52,22 @@ module Celluloid
           @sub.close
           raise e
         end
+      end
+
+      def remove_peer(endpoint)
+        if @peers.include?(endpoint)
+          begin
+            @peers.delete(endpoint)
+            @sub.disconnect(endpoint)
+          rescue IOError => e
+            @sub.close
+            raise e
+          end
+        end
+      end
+
+      def clear_peers
+        @peers.dup.each { |peer| remove_peer(peer) }
       end
 
       def listen
