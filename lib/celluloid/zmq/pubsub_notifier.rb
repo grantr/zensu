@@ -5,18 +5,15 @@ module Celluloid
 
       attr_accessor :peers, :endpoint
 
-      def initialize(endpoint, peer_endpoints=[])
+      def initialize(endpoint=nil, peer_endpoints=[])
         super()
 
         @endpoint = endpoint
         init_pub_socket if @endpoint
-        init_sub_socket
 
         Array(peer_endpoints).each do |peer_endpoint|
           add_peer(peer_endpoint)
         end
-
-        async.listen
       end
 
       def init_pub_socket
@@ -39,10 +36,12 @@ module Celluloid
         @sub.subscribe("")
 
         #TODO add peers? could end up looping
+        async.listen
       end
 
       def add_peer(endpoint)
         @peers ||= []
+        init_sub_socket if @peers.empty?
         begin
           @peers << endpoint
           @sub.connect(endpoint)
