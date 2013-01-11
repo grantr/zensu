@@ -2,7 +2,6 @@ require "zensu/version"
 
 require 'celluloid'
 require 'celluloid/zmq'
-require 'celluloid/zmq/extra_sockets'
 
 require 'zensu/settings'
 require 'zensu/remote_notifications'
