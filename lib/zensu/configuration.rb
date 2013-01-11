@@ -84,3 +84,4 @@ module Zensu
 end
 
 require 'zensu/configuration/configurable'
+require 'zensu/configuration/notifications'
