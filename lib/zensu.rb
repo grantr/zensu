@@ -3,10 +3,12 @@ require "zensu/version"
 require 'celluloid'
 require 'celluloid/zmq'
 
-require 'zensu/settings'
+require 'zensu/configuration'
 require 'zensu/remote_notifications'
 
 module Zensu
+  include Configurable
+
   class << self
     def id
       @id ||= Celluloid::UUID.generate #TODO
