@@ -3,6 +3,7 @@ module Zensu
     class Heart
       include Celluloid
       include Zensu::RemoteNotifications
+      include Celluloid::Logger
 
       HEARTBEAT = 1 #TODO setting
 
@@ -11,6 +12,7 @@ module Zensu
       end
 
       def beat
+        Celluloid.logger.trace "beat heart #{Zensu.id} #{Time.now.to_i}"
         remote_publish("zensu.heartbeat", Zensu.id, Time.now.to_i.to_s)
       end
     end
