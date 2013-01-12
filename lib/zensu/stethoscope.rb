@@ -14,8 +14,12 @@ module Zensu
 
     def record_heartbeat(topic, node_id, heartbeat)
       Logger.trace "recording heartbeat from #{node_id} #{heartbeat}"
-      @nodes[node_id] ||= Node.new_link(node_id)
+      add_node(node_id) unless @nodes.has_key?(node_id)
       @nodes[node_id].beat_heart
+    end
+
+    def add_node(node_id)
+      @nodes[node_id] ||= Node.new_link(node_id)
     end
   end
 end
