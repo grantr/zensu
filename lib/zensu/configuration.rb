@@ -32,7 +32,7 @@ module Zensu
     def remove(key)
       if deleted = delete(key)
         #TODO if deleted is an array, publish a remove_element
-        publish("#{topic}.#{key}.remove", deleted)
+        publish("#{topic}.#{key}.remove", key, :remove, deleted)
       end
     end
 
@@ -43,16 +43,16 @@ module Zensu
       if previous.is_a?(Array) && current.is_a?(Array)
         publish_array_update(key, previous, current)
       else
-        publish("#{topic}.#{key}.set", previous, current)
+        publish("#{topic}.#{key}.set", key, :set, previous, current)
       end
     end
 
     def publish_array_update(key, previous, current)
       (previous - current).each do |removed|
-        publish([topic, key, "remove_element"].join("."), removed, nil)
+        publish([topic, key, "remove_element"].join("."), key, :remove_element, removed, nil)
       end
       (current - previous).each do |added|
-        publish([topic, key, "add_element"].join("."), nil, added)
+        publish([topic, key, "add_element"].join("."), key, :add_element, nil, added)
       end
     end
 

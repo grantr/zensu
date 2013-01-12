@@ -25,29 +25,26 @@ module Zensu
 
     def initialize
       super()
-      config_subscribe(:servers, :set_servers)
-      config_subscribe(:broadcast_endpoint, :set_endpoint)
-    end
 
-    def set_servers(topic, previous, current)
-      case config_action(topic)
-      when :set
-        clear_peers
-        current.each { |endpoint| add_peer(endpoint) }
-      when :remove_element
-        remove_peer(previous)
-      when :add_element
-        add_peer(current)
-      when :remove
-        clear_peers
+      on_configure :servers do |action, previous, current|
+        case action
+        when :set
+          clear_peers
+          current.each { |endpoint| add_peer(endpoint) }
+        when :remove_element
+          remove_peer(previous)
+        when :add_element
+          add_peer(current)
+        when :remove
+          clear_peers
+        end
       end
-    end
 
-    def set_endpoint(topic, previous, current)
-      case config_action(topic)
-      when :set
+      on_set :broadcast_endpoint do |previous, current|
         add_endpoint(current)
-      when :remove
+      end
+
+      on_remove :broadcast_endpoint do |previous, current|
         remove_endpoint(previous)
       end
     end
