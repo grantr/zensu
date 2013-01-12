@@ -46,9 +46,9 @@ module Zensu
     def set_endpoint(topic, previous, current)
       case config_action(topic)
       when :set
-        @endpoint = current
-        init_pub_socket
+        add_endpoint(current)
       when :remove
+        remove_endpoint(previous)
       end
     end
   end

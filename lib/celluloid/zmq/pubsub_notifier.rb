@@ -3,14 +3,15 @@ module Celluloid
     class PubsubNotifier < Celluloid::Notifications::Fanout
       include Celluloid::ZMQ
 
-      attr_accessor :peers, :endpoint
+      attr_accessor :peers, :endpoints
 
-      #TODO support multiple endpoints
-      def initialize(endpoint=nil, peer_endpoints=[])
+      def initialize(endpoints=[], peer_endpoints=[])
         super()
 
-        @endpoint = endpoint
-        init_pub_socket if @endpoint
+        @endpoints = []
+        Array(endpoints).each do |endpoint|
+          add_endpoint(endpoint)
+        end
 
         @peers = []
         Array(peer_endpoints).each do |peer_endpoint|
@@ -23,13 +24,33 @@ module Celluloid
 
         @pub = PubSocket.new
         SocketMonitor.new_link(@pub, "zmq.pubsub_notifier.pub")
+      end
 
+      def add_endpoint(endpoint)
+        init_pub_socket if @endpoints.empty?
         begin
-          @pub.bind(@endpoint)
+          @endpoints << endpoint
+          @pub.bind(endpoint)
         rescue IOError => e
           @pub.close
           raise e
         end
+      end
+
+      def remove_endpoint(endpoint)
+        if @endpoints.include?(endpoint)
+          begin
+            @endpoints.delete(endpoint)
+            @pub.unbind(endpoint)
+          rescue IOError => e
+            @pub.close
+            raise e
+          end
+        end
+      end
+
+      def clear_endpoints
+        @endpoints.dup.each { |endpoint| remove_endpoint(endpoint) }
       end
 
       def init_sub_socket
