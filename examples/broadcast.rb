@@ -7,5 +7,11 @@ require './examples/config'
 # 
 # Zensu.config.servers = ["tcp://127.0.0.1:58000"]
 
-Celluloid::Actor[:broadcaster].broadcast("topic", "hello")
+require File.expand_path('../broadcaster', __FILE__)
+require File.expand_path('../subscriber', __FILE__)
+
+b = Broadcaster.new
+s = Subscriber.new
+
+b.broadcast("topic", "hello")
 sleep 5
