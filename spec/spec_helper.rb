@@ -7,11 +7,7 @@ if ENV['COVERAGE'] == 'true' && RUBY_ENGINE == "ruby"
   end
 end
 
-require 'fakeredis' #TODO why doesnt this work?
-
 require 'zensu'
-Zensu.logger = nil
-
 
 Dir['./spec/support/*.rb'].map {|f| require f }
 

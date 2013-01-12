@@ -19,9 +19,6 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency "celluloid"
   gem.add_runtime_dependency "celluloid-zmq"
-  gem.add_runtime_dependency "reel"
-  gem.add_runtime_dependency "multi_json", [ ">= 1.3.0" ]
-  gem.add_runtime_dependency "thor"
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'

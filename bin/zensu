@@ -1,9 +1,0 @@
-#!/usr/bin/env ruby
-
-#TODO don't require bundler
-require 'bundler/setup'
-
-$: << File.dirname(__FILE__) + '/../lib' unless $:.include?(File.dirname(__FILE__) + '/../lib/')
-require 'zensu/cli'
-
-Zensu::CLI.start
