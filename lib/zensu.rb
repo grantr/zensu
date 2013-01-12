@@ -14,6 +14,8 @@ module Zensu
       @id ||= Celluloid::UUID.generate #TODO
     end
   end
+
+  Logger = Celluloid::Logger
 end
 
 require 'zensu/client'
