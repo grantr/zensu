@@ -16,6 +16,7 @@ module Zensu
     # topic to publish updates to
     attr_accessor :topic
 
+    # TODO may be useful to add a uuid to this topic
     def initialize(topic=nil)
       @topic = topic || "zensu.config"
     end
