@@ -83,6 +83,8 @@ module Zensu
         config_callbacks << callback
         config = options[:config] || Zensu.config
         topic = [config.topic, callback.key, callback.action].compact.join(".")
+
+        link Celluloid::Notifications.notifier
         Celluloid::Notifications.notifier.subscribe(Celluloid::Actor.current, /^#{topic}/, :dispatch_config_callback)
       end
 
