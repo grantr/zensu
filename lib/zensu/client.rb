@@ -1,12 +1,12 @@
-require 'zensu/client/stethoscope'
-require 'zensu/client/subscriber'
+require 'zensu/stethoscope'
+require 'zensu/subscriber'
 
 module Zensu
 
   module Client
     class App < Celluloid::SupervisionGroup
-      supervise Stethoscope
-      supervise Subscriber
+      supervise Stethoscope, as: :stethoscope
+      supervise Subscriber, as: :subscriber
     end
   end
 end

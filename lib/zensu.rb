@@ -6,12 +6,14 @@ require 'celluloid/zmq'
 require 'zensu/configuration'
 require 'zensu/remote_notifications'
 
+require 'zensu/node'
+
 module Zensu
   include Configurable
 
   class << self
-    def id
-      @id ||= Celluloid::UUID.generate #TODO
+    def node
+      @node ||= Node.new
     end
   end
 

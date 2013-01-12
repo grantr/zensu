@@ -7,6 +7,5 @@ require './examples/config'
 # 
 # Zensu.config.servers = ["tcp://127.0.0.1:58000"]
 
-broadcaster = Celluloid::Actor.all.detect { |a| a.class == Zensu::Server::Broadcaster }
-broadcaster.broadcast("topic", "hello")
-sleep 1
+Celluloid::Actor[:broadcaster].broadcast("topic", "hello")
+sleep 5
