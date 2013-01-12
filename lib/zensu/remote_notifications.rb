@@ -6,11 +6,16 @@ module Zensu
       Celluloid::Actor[:remote_notifier]
     end
 
+    def remote_notifier
+      Zensu::RemoteNotifications.notifier
+    end
+
     def remote_publish(pattern, *args)
       Zensu::RemoteNotifications.notifier.publish(pattern, *args)
     end
 
     def remote_subscribe(pattern, method)
+      link remote_notifier
       Zensu::RemoteNotifications.notifier.subscribe(Celluloid::Actor.current, pattern, method)
     end
 
