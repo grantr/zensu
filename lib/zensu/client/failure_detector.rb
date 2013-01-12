@@ -4,7 +4,6 @@ module Zensu
       include Celluloid
       include Celluloid::FSM
       include Celluloid::Notifications
-      include Celluloid::Logger
 
       attr_reader :last_time, :intervals
       attr_reader :phi_threshold
@@ -59,12 +58,12 @@ module Zensu
       end
 
       def notify_up
-        info "#{@id} up"
+        Logger.info "#{@id} up"
         publish("zensu.server.state.#{@id}", :up)
       end
 
       def notify_down
-        info "#{@id} down"
+        Logger.info "#{@id} down"
         publish("zensu.server.state.#{@id}", :down)
       end
 

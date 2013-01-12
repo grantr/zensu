@@ -26,7 +26,6 @@ module Zensu
 
   class RemoteNotifier < Celluloid::ZMQ::PubsubNotifier
     include Configuration::Notifications
-    include Celluloid::Logger
 
     def initialize
       super()

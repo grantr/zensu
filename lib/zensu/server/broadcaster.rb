@@ -3,10 +3,9 @@ module Zensu
     class Broadcaster
       include Celluloid
       include Zensu::RemoteNotifications
-      include Celluloid::Logger
 
       def broadcast(topic, notification)
-        debug "publishing to #{topic}: #{notification}"
+        Logger.debug "publishing to #{topic}: #{notification}"
         remote_publish("zensu.broadcast.#{topic}", notification)
       end
 
