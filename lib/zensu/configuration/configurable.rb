@@ -8,15 +8,15 @@ module Zensu
     module ClassMethods
       def config_topic(topic=nil)
         if topic
-          @_config_topic = topic
+          @config_topic = topic
         else
-          @_config_topic
+          @config_topic
         end
       end
 
       def config
         # create a new "anonymous" class that will host the compiled reader methods
-        @_config ||= Class.new(Configuration).new(@_config_topic)
+        @config ||= Class.new(Configuration).new(@_config_topic)
       end
 
       def configure
