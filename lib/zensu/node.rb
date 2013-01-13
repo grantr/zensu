@@ -22,7 +22,7 @@ module Zensu
       super()
       @id = id || Celluloid::UUID.generate
       @fd = FailureDetector.new
-      attach self
+      attach Actor.current
     end
 
     def beat_heart
