@@ -44,5 +44,11 @@ module Zensu
       Logger.info "#{@id} #{state}"
       publish("zensu.node.state.#{@id}", state)
     end
+
+    # overridden because inspect causes stack overflow
+    # TODO why?
+    def inspect
+      "Node"
+    end
   end
 end
