@@ -84,6 +84,13 @@ module Zensu
         config = options[:config] || Zensu.config
         topic = [config.topic, callback.key, callback.action].compact.join(".")
 
+        if options[:initial_set] != false
+          # TODO should this fire on all keys for keyless callbacks?
+          if config.has_key?(callback.key) && callback.subscribed_to?(key, :set)
+            cc.call(key, :set, config.get(callback.key), config.get(callback.key))
+          end
+        end
+
         link Celluloid::Notifications.notifier
         Celluloid::Notifications.notifier.subscribe(Celluloid::Actor.current, /^#{topic}/, :dispatch_config_callback)
       end
