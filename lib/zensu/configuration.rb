@@ -35,6 +35,7 @@ module Zensu
           RUBY
         end
       end
+      #TODO writer methods
     end
 
   end
