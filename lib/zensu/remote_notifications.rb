@@ -25,12 +25,12 @@ module Zensu
   end
 
   class RemoteNotifier < Celluloid::ZMQ::PubsubNotifier
-    include Configuration::Notifications
+    include Registry::Callbacks
 
     def initialize
       super()
 
-      on_configure :servers do |action, previous, current|
+      on_update Zensu.config, :servers do |action, previous, current|
         case action
         when :set
           clear_peers
@@ -44,11 +44,11 @@ module Zensu
         end
       end
 
-      on_set :broadcast_endpoint do |previous, current|
+      on_set Zensu.config, :broadcast_endpoint do |previous, current|
         add_endpoint(current)
       end
 
-      on_remove :broadcast_endpoint do |previous, current|
+      on_remove Zensu.config, :broadcast_endpoint do |previous, current|
         remove_endpoint(previous)
       end
     end
