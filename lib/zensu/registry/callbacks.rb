@@ -18,7 +18,7 @@ module Zensu
 
       class Callback
 
-        attr_accessor :key, :action, :block
+        attr_accessor :topic, :key, :action, :block
 
         def initialize(key=nil, action=nil, &block)
           @key = key ? key.to_sym : nil
@@ -78,6 +78,7 @@ module Zensu
 
         registry_callbacks << callback
         topic = [registry.topic, callback.key, callback.action].compact.join(".")
+        callback.topic = topic
 
         if options[:initial_set] != false
           # TODO should this fire on all keys for keyless callbacks?
@@ -87,15 +88,15 @@ module Zensu
         end
 
         link Celluloid::Notifications.notifier
-        Celluloid::Notifications.notifier.subscribe(Celluloid::Actor.current, /^#{topic}$/, :dispatch_registry_callback)
+        Celluloid::Notifications.notifier.subscribe(Celluloid::Actor.current, /^#{topic}/, :dispatch_registry_callback)
       end
 
-      def registry_callbacks_for(key, action)
-        registry_callbacks.select { |cc| cc.active? && cc.subscribed_to?(key, action) }
+      def registry_callbacks_for(topic, key, action)
+        registry_callbacks.select { |cc| cc.topic =~ /^#{topic}/ && cc.active? && cc.subscribed_to?(key, action) }
       end
 
       def dispatch_registry_callback(topic, key, action, previous, current)
-        registry_callbacks_for(key, action).each { |cc| cc.call(key, action, previous, current) }
+        registry_callbacks_for(topic, key, action).each { |cc| cc.call(key, action, previous, current) }
       end
 
       def registry_callbacks
