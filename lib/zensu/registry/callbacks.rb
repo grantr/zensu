@@ -18,7 +18,7 @@ module Zensu
 
       class Callback
 
-        attr_accessor :topic, :key, :action, :block
+        attr_accessor :key, :action, :block
 
         def initialize(key=nil, action=nil, &block)
           @key = key ? key.to_sym : nil
@@ -76,9 +76,8 @@ module Zensu
       def add_registry_callback(registry, callback, options)
         raise ArgumentError, "must provide a registry" if registry.nil?
 
-        registry_callbacks << callback
+        registry_callbacks[registry.id] << callback
         topic = [registry.topic, callback.key, callback.action].compact.join(".")
-        callback.topic = topic
 
         if options[:initial_set] != false
           # TODO should this fire on all keys for keyless callbacks?
@@ -91,16 +90,16 @@ module Zensu
         Celluloid::Notifications.notifier.subscribe(Celluloid::Actor.current, /^#{topic}/, :dispatch_registry_callback)
       end
 
-      def registry_callbacks_for(topic, key, action)
-        registry_callbacks.select { |cc| cc.topic =~ /^#{topic}/ && cc.active? && cc.subscribed_to?(key, action) }
+      def registry_callbacks_for(registry_id, key, action)
+        registry_callbacks[registry_id].select { |cc| cc.active? && cc.subscribed_to?(key, action) }
       end
 
-      def dispatch_registry_callback(topic, key, action, previous, current)
-        registry_callbacks_for(topic, key, action).each { |cc| cc.call(key, action, previous, current) }
+      def dispatch_registry_callback(topic, registry_id, key, action, previous, current)
+        registry_callbacks_for(registry_id, key, action).each { |cc| cc.call(key, action, previous, current) }
       end
 
       def registry_callbacks
-        @registry_callbacks ||= []
+        @registry_callbacks ||= Hash.new { |k, v| k[v] = [] }
       end
     end
   end

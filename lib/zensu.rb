@@ -3,6 +3,7 @@ require "zensu/version"
 require 'celluloid'
 require 'celluloid/zmq'
 
+require 'zensu/registry'
 require 'zensu/configuration'
 require 'zensu/remote_notifications'
 

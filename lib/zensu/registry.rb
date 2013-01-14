@@ -1,12 +1,10 @@
 module Zensu
   class Registry < Hash
-    # topic to publish updates to
-    attr_accessor :topic
+    attr_accessor :id
 
-    # TODO may be useful to add a uuid to this topic
-    def initialize(topic=nil)
+    def initialize(id=nil)
       @lock = Mutex.new
-      @topic = topic || Celluloid::UUID.generate
+      @id = id || Celluloid::UUID.generate
     end
 
     def get(key)
@@ -25,7 +23,7 @@ module Zensu
     def remove(key)
       @lock.synchronize do
         if deleted = delete(key)
-          Celluloid::Notifications.notifier.async.publish("#{topic}.#{key}.remove", key, :remove, deleted)
+          Celluloid::Notifications.notifier.async.publish("#{topic}.#{key}.remove", id, key, :remove, deleted, nil)
         end
       end
     end
@@ -36,17 +34,21 @@ module Zensu
       if previous.is_a?(Array) && current.is_a?(Array)
         publish_array_update(key, previous, current)
       else
-        Celluloid::Notifications.notifier.async.publish("#{topic}.#{key}.set", key, :set, previous, current)
+        Celluloid::Notifications.notifier.async.publish("#{topic}.#{key}.set", id, key, :set, previous, current)
       end
     end
 
     def publish_array_update(key, previous, current)
       (previous - current).each do |removed|
-        Celluloid::Notifications.notifier.async.publish("#{topic}.#{key}.remove_element", key, :remove_element, removed, nil)
+        Celluloid::Notifications.notifier.async.publish("#{topic}.#{key}.remove_element", id, key, :remove_element, removed, nil)
       end
       (current - previous).each do |added|
-        Celluloid::Notifications.notifier.async.publish("#{topic}.#{key}.add_element", key, :add_element, nil, added)
+        Celluloid::Notifications.notifier.async.publish("#{topic}.#{key}.add_element", id, key, :add_element, nil, added)
       end
+    end
+
+    def topic
+      "zensu.registry.#{id}"
     end
   end
 end

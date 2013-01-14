@@ -1,9 +1,5 @@
-require 'zensu/registry'
 module Zensu
   class Configuration < Registry
-    # topic to publish updates to
-    attr_accessor :topic
-
     def method_missing(name, *args)
       if name.to_s =~ /(.*)=$/
         set($1, args.first)
