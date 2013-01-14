@@ -15,6 +15,10 @@ module Zensu
     def node
       @node ||= Node.new
     end
+
+    def nodes
+      @nodes ||= Registry.new
+    end
   end
 
   Logger = Celluloid::Logger
