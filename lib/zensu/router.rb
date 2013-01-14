@@ -3,11 +3,10 @@ module Zensu
   class Message
     VERSION = "1"
 
-    attr_accessor :headers
-    attr_accessor :version
-    attr_accessor :args
+    attr_accessor :id, :headers, :version, :args
 
-    def initialize(headers=[], args=[], version=VERSION)
+    def initialize(id=nil, headers=[], args=[], version=VERSION)
+      @id = id || Celluloid::UUID.generate
       @headers = headers
       @args = args
       @version = version
@@ -21,6 +20,8 @@ module Zensu
 
       #TODO branch on version here
 
+      message.id = parts.shift
+
       while (header = parts.shift) != ""
         message.headers << header
       end
@@ -31,6 +32,7 @@ module Zensu
     def to_parts
       [
        version,
+       id,
        *headers.collect(&:to_s),# json
        "",
        *args.collect(&:to_s)] # json
@@ -126,7 +128,7 @@ module Zensu
 
     def remote_send(identity, *args)
       #TODO headers
-      message = Message.new([], args)
+      message = Message.new(nil, [], args)
       @socket.write(identity, "", *message.to_parts)
     end
 
