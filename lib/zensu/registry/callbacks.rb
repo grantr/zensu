@@ -50,46 +50,26 @@ module Zensu
         end
       end
 
-      # registry=default_registry, key, action, options
-      def on_update(*args, &block)
-        args.unshift(default_registry) unless args.first.is_a?(Registry)
-        options = (args.last.is_a?(Hash) && !args.last.is_a?(Registry)) ? args.pop : {}
-
-        registry, key, action = args
+      # registry, key, action, options
+      def on_update(registry, key=nil, action=nil, options={}, &block)
         callback = Callback.new(key, action, &block)
         add_registry_callback(registry, callback, options)
         callback
       end
 
-      def on_set(*args, &block)
-        args.unshift(default_registry) unless args.first.is_a?(Registry)
-        options = (args.last.is_a?(Hash) && !args.last.is_a?(Registry)) ? args.pop : {}
-
-        registry, key = args
+      def on_set(registry, key=nil, options={}, &block)
         on_update(registry, key, :set, options, &block)
       end
 
-      def on_remove(*args, &block)
-        args.unshift(default_registry) unless args.first.is_a?(Registry)
-        options = (args.last.is_a?(Hash) && !args.last.is_a?(Registry)) ? args.pop : {}
-
-        registry, key = args
+      def on_remove(registry, key=nil, options={}, &block)
         on_update(registry, key, :remove, options, &block)
       end
 
-      def on_add_element(*args, &block)
-        args.unshift(default_registry) unless args.first.is_a?(Registry)
-        options = (args.last.is_a?(Hash) && !args.last.is_a?(Registry)) ? args.pop : {}
-
-        registry, key = args
+      def on_add_element(registry, key=nil, options={}, &block)
         on_update(registry, key, :add_element, options, &block)
       end
 
-      def on_remove_element(*args, &block)
-        args.unshift(default_registry) unless args.first.is_a?(Registry)
-        options = (args.last.is_a?(Hash) && !args.last.is_a?(Registry)) ? args.pop : {}
-
-        registry, key = args
+      def on_remove_element(registry, key=nil, options={}, &block)
         on_update(registry, key, :remove_element, options, &block)
       end
 
@@ -120,14 +100,6 @@ module Zensu
 
       def registry_callbacks
         @registry_callbacks ||= []
-      end
-
-      def default_registry
-        @default_registry
-      end
-
-      def default_registry=(registry)
-        @default_registry = registry
       end
     end
   end
