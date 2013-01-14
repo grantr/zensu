@@ -11,8 +11,6 @@ module Zensu
   #
   # ActiveSupport::Configurable is interesting - config_accessor is a good idea
   class Configuration < Hash
-    include Celluloid::Notifications
-
     # topic to publish updates to
     attr_accessor :topic
 
@@ -38,7 +36,7 @@ module Zensu
     def remove(key)
       @mutex.synchronize do
         if deleted = delete(key)
-          publish("#{topic}.#{key}.remove", key, :remove, deleted)
+          Celluloid::Notifications.notifier.async.publish("#{topic}.#{key}.remove", key, :remove, deleted)
         end
       end
     end
@@ -50,16 +48,16 @@ module Zensu
       if previous.is_a?(Array) && current.is_a?(Array)
         publish_array_update(key, previous, current)
       else
-        publish("#{topic}.#{key}.set", key, :set, previous, current)
+        Celluloid::Notifications.notifier.async.publish("#{topic}.#{key}.set", key, :set, previous, current)
       end
     end
 
     def publish_array_update(key, previous, current)
       (previous - current).each do |removed|
-        publish([topic, key, "remove_element"].join("."), key, :remove_element, removed, nil)
+        Celluloid::Notifications.notifier.async.publish("#{topic}.#{key}.remove_element", key, :remove_element, removed, nil)
       end
       (current - previous).each do |added|
-        publish([topic, key, "add_element"].join("."), key, :add_element, nil, added)
+        Celluloid::Notifications.notifier.async.publish("#{topic}.#{key}.add_element", key, :add_element, nil, added)
       end
     end
 
