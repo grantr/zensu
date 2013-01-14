@@ -9,6 +9,8 @@ module Zensu
     # on_add_element registry, :servers do |previous, current|
     # end
     #
+    # on_set registry do |key, previous, current|
+    #
     # cb = on_update registry, :servers do |action, previous, current|
     # end
     # cb.cancel
@@ -50,8 +52,8 @@ module Zensu
 
       # registry=default_registry, key, action, options
       def on_update(*args, &block)
-        options = args.last.is_a?(Hash) ? args.pop : {}
-        args.unshift(default_registry) if args.size < 2
+        args.unshift(default_registry) unless args.first.is_a?(Registry)
+        options = (args.last.is_a?(Hash) && !args.last.is_a?(Registry)) ? args.pop : {}
 
         registry, key, action = args
         callback = Callback.new(key, action, &block)
@@ -60,32 +62,32 @@ module Zensu
       end
 
       def on_set(*args, &block)
-        options = args.last.is_a?(Hash) ? args.pop : {}
-        args.unshift(default_registry) if args.size < 2
+        args.unshift(default_registry) unless args.first.is_a?(Registry)
+        options = (args.last.is_a?(Hash) && !args.last.is_a?(Registry)) ? args.pop : {}
 
         registry, key = args
         on_update(registry, key, :set, options, &block)
       end
 
       def on_remove(*args, &block)
-        options = args.last.is_a?(Hash) ? args.pop : {}
-        args.unshift(default_registry) if args.size < 2
+        args.unshift(default_registry) unless args.first.is_a?(Registry)
+        options = (args.last.is_a?(Hash) && !args.last.is_a?(Registry)) ? args.pop : {}
 
         registry, key = args
         on_update(registry, key, :remove, options, &block)
       end
 
       def on_add_element(*args, &block)
-        options = args.last.is_a?(Hash) ? args.pop : {}
-        args.unshift(default_registry) if args.size < 2
+        args.unshift(default_registry) unless args.first.is_a?(Registry)
+        options = (args.last.is_a?(Hash) && !args.last.is_a?(Registry)) ? args.pop : {}
 
         registry, key = args
         on_update(registry, key, :add_element, options, &block)
       end
 
       def on_remove_element(*args, &block)
-        options = args.last.is_a?(Hash) ? args.pop : {}
-        args.unshift(default_registry) if args.size < 2
+        args.unshift(default_registry) unless args.first.is_a?(Registry)
+        options = (args.last.is_a?(Hash) && !args.last.is_a?(Registry)) ? args.pop : {}
 
         registry, key = args
         on_update(registry, key, :remove_element, options, &block)
@@ -105,7 +107,7 @@ module Zensu
         end
 
         link Celluloid::Notifications.notifier
-        Celluloid::Notifications.notifier.subscribe(Celluloid::Actor.current, /^#{topic}/, :dispatch_registry_callback)
+        Celluloid::Notifications.notifier.subscribe(Celluloid::Actor.current, /^#{topic}$/, :dispatch_registry_callback)
       end
 
       def registry_callbacks_for(key, action)
