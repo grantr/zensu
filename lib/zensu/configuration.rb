@@ -18,22 +18,28 @@ module Zensu
 
     # TODO may be useful to add a uuid to this topic
     def initialize(topic=nil)
+      @mutex = Mutex.new
       @topic = topic || "zensu.config"
     end
 
     def get(key)
-      fetch(key.to_sym, nil)
+      @mutex.synchronize do
+        fetch(key.to_sym, nil)
+      end
     end
 
     def set(key, value)
-      publish_update(key, get(key), value)
-      store(key.to_sym, value)
+      @mutex.synchronize do
+        publish_update(key, get(key), value)
+        store(key.to_sym, value)
+      end
     end
 
     def remove(key)
-      if deleted = delete(key)
-        #TODO if deleted is an array, publish a remove_element
-        publish("#{topic}.#{key}.remove", key, :remove, deleted)
+      @mutex.synchronize do
+        if deleted = delete(key)
+          publish("#{topic}.#{key}.remove", key, :remove, deleted)
+        end
       end
     end
 
