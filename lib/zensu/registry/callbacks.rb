@@ -77,8 +77,8 @@ module Zensu
       def add_registry_callback(registry, callback, options)
         raise ArgumentError, "must provide a registry" if registry.nil?
 
-        registry_callbacks[registry.id] << callback
-        topic = [registry.topic, callback.key, callback.action].compact.join(".")
+        registry_callbacks[registry._id] << callback
+        topic = [registry._topic, callback.key, callback.action].compact.join(".")
 
         link Celluloid::Notifications.notifier
         Celluloid::Notifications.notifier.subscribe(Celluloid::Actor.current, /^#{topic}/, :dispatch_registry_callback)
