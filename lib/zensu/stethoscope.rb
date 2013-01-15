@@ -5,21 +5,19 @@ module Zensu
     include Celluloid
     include Zensu::RemoteNotifications
 
-    attr_accessor :nodes
-
     def initialize
-      @nodes = {}
       remote_subscribe(/^zensu.heartbeat/, :record_heartbeat)
     end
 
-    def record_heartbeat(topic, node_id, heartbeat)
+    def record_heartbeat(topic, node_id, node_address, heartbeat)
       Logger.trace "recording heartbeat from #{node_id} #{heartbeat}"
-      add_node(node_id) unless @nodes.has_key?(node_id)
-      @nodes[node_id].beat_heart
-    end
 
-    def add_node(node_id)
-      @nodes[node_id] ||= Node.new_link(node_id)
+      #TODO possible race condition from other node sources
+      unless node = Zensu.nodes.get(node_id)
+        node = Zensu.nodes.set(node_id, Node.new(node_id, node_address))
+      end
+
+      node.beat_heart(heartbeat)
     end
   end
 end
