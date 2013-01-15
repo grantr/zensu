@@ -26,6 +26,7 @@ module Zensu
       end
 
       message.args = parts
+      message
     end
 
     def to_parts
