@@ -90,7 +90,7 @@ module Celluloid
         @socket.close if @socket
       end
 
-      def remote_send(identity, *parts)
+      def write(identity, *parts)
         @socket.write(identity, "", *parts)
       end
 
@@ -99,12 +99,12 @@ module Celluloid
           parts = @socket.read_multipart
           identity = parts.shift
           parts.shift
-          dispatch(identity, *parts)
+          dispatch(identity, parts)
         end
       end
 
       # override this
-      def dispatch(identity, *parts)
+      def dispatch(identity, parts)
         Logger.debug("received message from #{identity}: #{parts.inspect}")
       end
 

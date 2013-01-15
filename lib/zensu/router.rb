@@ -26,13 +26,14 @@ module Zensu
     end
 
     def request(node, actor, method, *args)
-      message = Message.new(nil, [], actor.name, method, *args)
-      remote_send(node.id, message.to_parts)
+      message = Message.new(nil, [], [actor.name, method, *args])
+      write(node.id, message.to_parts)
     end
 
     def dispatch(identity, parts)
       message = Message.parse(parts)
       Logger.debug "received from #{identity}: #{message.inspect}"
+      write(identity, Message.new(message.id, [], ["reply", "reply", 1]).to_parts)
     end
 
   end
