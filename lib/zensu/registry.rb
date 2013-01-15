@@ -8,12 +8,14 @@ module Zensu
     end
 
     def get(key)
+      return if key.nil?
       @_lock.synchronize do
         fetch(key.to_sym, nil)
       end
     end
 
     def set(key, value)
+      raise "Cannot store value with nil key" if key.nil?
       @_lock.synchronize do
         publish_update(key, fetch(key.to_sym, nil), value)
         store(key.to_sym, value)
@@ -21,6 +23,7 @@ module Zensu
     end
 
     def remove(key)
+      raise "Cannot remove nil key" if key.nil?
       @_lock.synchronize do
         if deleted = delete(key)
           Celluloid::Notifications.notifier.async.publish("#{_topic}.#{key}.remove", @_id, key, :remove, deleted, nil)
