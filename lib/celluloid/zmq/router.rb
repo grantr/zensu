@@ -5,7 +5,7 @@ module Celluloid
 
       attr_accessor :identity, :peers, :endpoints
 
-      def initialize(identity, endpoints=[], peer_endpoints=[])
+      def initialize(identity=nil, endpoints=[], peer_endpoints=[])
         @identity = identity
         @endpoints = []
         Array(endpoints).each do |endpoint|
@@ -22,7 +22,6 @@ module Celluloid
         @socket.close if @socket
 
         @socket = RouterSocket.new
-        @socket.identity = @identity
         SocketMonitor.new_link(@socket, "zmq.socket.#{Celluloid::UUID.generate}")
       end
 
@@ -32,6 +31,7 @@ module Celluloid
           async.listen if @endpoints.empty? && @peers.empty?
           begin
             @endpoints << endpoint
+            @socket.identity = @identity if @identity
             @socket.bind(endpoint)
           rescue IOError => e
             @socket.close
