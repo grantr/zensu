@@ -16,12 +16,14 @@ module Zensu
         remove_endpoint(previous)
       end
 
-      on_set Zensu.nodes do |key, previous, current|
-        add_peer(current.address)
-      end
-
-      on_remove Zensu.nodes do |key, previous, current|
-        remove_peer(previous.address)
+      on_update Zensu.nodes do |key, action, previous, current|
+        case action
+        when :set
+          Logger.debug "adding peer: #{key} #{current}"
+          add_peer(current.address)
+        when :remove
+          remove_peer(previous.address)
+        end
       end
     end
 

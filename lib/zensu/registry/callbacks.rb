@@ -9,6 +9,7 @@ module Zensu
     # on_add_element registry, :servers do |previous, current|
     # end
     #
+    #TODO this one doesn't work because of topic compaction
     # on_set registry do |key, previous, current|
     #
     # cb = on_update registry, :servers do |action, previous, current|
