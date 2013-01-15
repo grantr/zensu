@@ -16,16 +16,23 @@ module Zensu
       notify_state(:down)
     end
 
-    attr_accessor :id, :fd
+    # Need an address class that is like a uri
+    attr_accessor :id, :address, :fd
 
-    def initialize(id=nil, options = {})
+    def initialize(id=nil, address=nil, options = {})
       super()
-      @id = id || Celluloid::UUID.generate
+      @id = id
+      @address = address
       @fd = FailureDetector.new
       attach Actor.current
     end
 
-    def beat_heart
+    def beat_heart(heartbeat=nil)
+      if heartbeat
+        # TODO heartbeat info
+        # possible heartbeat encryption
+      end
+
       if @fd.empty?
         @timer = every(CHECK_INTERVAL) { check }
       end
