@@ -67,14 +67,16 @@ module Zensu
     end
 
     def add_endpoint(endpoint)
-      init_router_socket if @socket.nil?
-      async.listen if @endpoints.empty? && @peers.empty?
-      begin
-        @endpoints << endpoint
-        @socket.bind(endpoint)
-      rescue IOError => e
-        @socket.close
-        raise e
+      unless @endpoints.include?(endpoint)
+        init_router_socket if @socket.nil?
+        async.listen if @endpoints.empty? && @peers.empty?
+        begin
+          @endpoints << endpoint
+          @socket.bind(endpoint)
+        rescue IOError => e
+          @socket.close
+          raise e
+        end
       end
     end
 
@@ -94,23 +96,25 @@ module Zensu
       @endpoints.dup.each { |endpoint| remove_endpoint(endpoint) }
     end
 
-    def add_peer(endpoint)
-      init_router_socket if @socket.nil?
-      async.listen if @endpoints.empty? && @peers.empty?
-      begin
-        @peers << endpoint
-        @socket.connect(endpoint)
-      rescue IOError => e
-        @socket.close
-        raise e
+    def add_peer(peer)
+      unless @peers.include?(peer)
+        init_router_socket if @socket.nil?
+        async.listen if @peers.empty? && @peers.empty?
+        begin
+          @peers << peer
+          @socket.connect(peer)
+        rescue IOError => e
+          @socket.close
+          raise e
+        end
       end
     end
 
-    def remove_peer(endpoint)
-      if @peers.include?(endpoint)
+    def remove_peer(peer)
+      if @peers.include?(peer)
         begin
-          @peers.delete(endpoint)
-          @socket.disconnect(endpoint)
+          @peers.delete(peer)
+          @socket.disconnect(peer)
         rescue IOError => e
           @socket.close
           raise e
