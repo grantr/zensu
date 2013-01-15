@@ -19,6 +19,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency "celluloid"
   gem.add_runtime_dependency "celluloid-zmq"
+  gem.add_runtime_dependency "red25519"
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'

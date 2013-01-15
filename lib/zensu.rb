@@ -8,6 +8,7 @@ require 'zensu/configuration'
 require 'zensu/remote_notifications'
 
 require 'zensu/node'
+require 'zensu/local_node'
 require 'zensu/router'
 
 module Zensu
@@ -15,7 +16,7 @@ module Zensu
 
   class << self
     def node
-      @node ||= Node.new
+      @node ||= LocalNode.new
     end
 
     def nodes
