@@ -38,15 +38,26 @@ module Zensu
       end
     end
 
-    def request(node, actor, method, *args)
-      message = Message.new(nil, [], [actor.name, method, *args])
-      write(node.id, message.to_parts)
+    # create a condition variable in a hash on request id, and wait on it.
+    # TODO this should be in the actor instead of the router
+    def request(node, name, method, *args)
+      @requests = {}
+      request = Message.new(nil, [], [name, method, *args])
+      @requests[request.id] = Condition.new
+      write(node.id, request.to_parts)
+      result = @requests[request.id].wait
+      
     end
 
+    # dispatch should look to see if there is a condition var waiting on this request id. if so, broadcast the response. if not, what?
     def dispatch(identity, parts)
       message = Message.parse(parts)
       Logger.debug "received from #{identity}: #{message.inspect}"
-      write(identity, Message.new(message.id, [], ["reply", "reply", 1]).to_parts)
+      if @requests && @requests[message.id]
+        @requests[message.id].broadcast(message)
+      else
+        write(identity, Message.new(message.id, [], ["reply", "reply", 1]).to_parts)
+      end
     end
 
   end
