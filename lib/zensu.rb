@@ -5,10 +5,10 @@ require 'celluloid/zmq'
 
 require 'zensu/registry'
 require 'zensu/configuration'
+require 'zensu/configuration/local_node'
 require 'zensu/remote_notifications'
 
 require 'zensu/node'
-require 'zensu/local_node'
 require 'zensu/router'
 
 module Zensu
@@ -16,7 +16,7 @@ module Zensu
 
   class << self
     def node
-      @node ||= LocalNode.new
+      @node ||= Configuration::LocalNode.new
     end
 
     def nodes
