@@ -79,15 +79,20 @@ module Zensu
         registry_callbacks[registry.id] << callback
         topic = [registry.topic, callback.key, callback.action].compact.join(".")
 
-        if options[:initial_set] != false
-          # TODO should this fire on all keys for keyless callbacks?
-          if registry.has_key?(callback.key) && callback.subscribed_to?(key, :set)
-            cc.call(key, :set, registry.get(callback.key), registry.get(callback.key))
-          end
-        end
-
         link Celluloid::Notifications.notifier
         Celluloid::Notifications.notifier.subscribe(Celluloid::Actor.current, /^#{topic}/, :dispatch_registry_callback)
+
+        # There is a potential race condition here. if the registry is updated
+        # between the subscribe and the initial set, the callback will fire twice.
+        # callbacks should be idempotent if possible.
+        if options[:initial_set] != false
+          keys = callback.key ? [callback.key] : registry.keys
+          keys.each do |key|
+            if registry.has_key?(callback.key) && callback.subscribed_to?(key, :set)
+              cc.call(key, :set, registry.get(callback.key), registry.get(callback.key))
+            end
+          end
+        end
       end
 
       def registry_callbacks_for(registry_id, key, action)
