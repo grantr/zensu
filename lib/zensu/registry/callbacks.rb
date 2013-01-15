@@ -90,7 +90,7 @@ module Zensu
           keys = callback.key ? [callback.key] : registry.keys
           keys.each do |key|
             if registry.has_key?(callback.key) && callback.subscribed_to?(key, :set)
-              cc.call(key, :set, registry.get(callback.key), registry.get(callback.key))
+              callback.call(key, :set, registry.get(callback.key), registry.get(callback.key))
             end
           end
         end
