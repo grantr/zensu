@@ -30,7 +30,7 @@ module Zensu
     def initialize
       super()
 
-      on_update Zensu.config, :servers do |action, previous, current|
+      on_update Zensu.config, :broadcast_servers do |action, previous, current|
         case action
         when :set
           clear_peers
