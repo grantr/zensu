@@ -1,3 +1,5 @@
+# *Most of the development that was happening here has moved to [Telecine](https://github.com/grantr/telecine).*
+
 # Zensu
 
 [![Build Status](https://secure.travis-ci.org/grantr/zensu.png?branch=master)](http://travis-ci.org/grantr/zensu)
