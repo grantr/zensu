@@ -20,7 +20,7 @@ module Zensu
     end
 
     def nodes
-      @nodes ||= Registry.new
+      @nodes ||= NodeRegistry.new
     end
   end
 
