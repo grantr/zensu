@@ -5,3 +5,4 @@ Celluloid.logger = Celluloid::IncidentLogger.new
 Celluloid::EventReporter.supervise_as :default_event_reporter, STDOUT
 
 Zensu::RemoteNotifier.supervise_as :remote_notifier
+Zensu::Router.supervise_as :router, Zensu.node.id

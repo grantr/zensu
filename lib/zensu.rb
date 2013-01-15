@@ -8,6 +8,7 @@ require 'zensu/configuration'
 require 'zensu/remote_notifications'
 
 require 'zensu/node'
+require 'zensu/router'
 
 module Zensu
   include Configurable
