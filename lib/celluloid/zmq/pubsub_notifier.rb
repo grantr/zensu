@@ -27,13 +27,15 @@ module Celluloid
       end
 
       def add_endpoint(endpoint)
-        init_pub_socket if @endpoints.empty?
-        begin
-          @endpoints << endpoint
-          @pub.bind(endpoint)
-        rescue IOError => e
-          @pub.close
-          raise e
+        unless endpoints.include?(endpoint)
+          init_pub_socket if @endpoints.empty?
+          begin
+            @endpoints << endpoint
+            @pub.bind(endpoint)
+          rescue IOError => e
+            @pub.close
+            raise e
+          end
         end
       end
 
@@ -64,22 +66,24 @@ module Celluloid
         async.listen
       end
 
-      def add_peer(endpoint)
-        init_sub_socket if @peers.empty?
-        begin
-          @peers << endpoint
-          @sub.connect(endpoint)
-        rescue IOError => e
-          @sub.close
-          raise e
+      def add_peer(peer)
+        unless @peers.include?(peer)
+          init_sub_socket if @peers.empty?
+          begin
+            @peers << peer
+            @sub.connect(peer)
+          rescue IOError => e
+            @sub.close
+            raise e
+          end
         end
       end
 
-      def remove_peer(endpoint)
-        if @peers.include?(endpoint)
+      def remove_peer(peer)
+        if @peers.include?(peer)
           begin
-            @peers.delete(endpoint)
-            @sub.disconnect(endpoint)
+            @peers.delete(peer)
+            @sub.disconnect(peer)
           rescue IOError => e
             @sub.close
             raise e
