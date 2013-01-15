@@ -8,6 +8,17 @@ module Zensu
     def initialize(*args)
       super
 
+      on_set Zensu.node, :id do |previous, current|
+        @identity = current
+        # if there are already bound endpoints, they must be rebound
+        # to get the new identity
+        unless @endpoints.empty?
+          endpoints = @endpoints.dup
+          clear_endpoints
+          endpoints.each { |endpoint| add_endpoint(endpoint) }
+        end
+      end
+
       on_set Zensu.config, :router_endpoint do |previous, current|
         add_endpoint(current)
       end
